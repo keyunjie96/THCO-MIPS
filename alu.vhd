@@ -32,6 +32,7 @@ USE IEEE.STD_LOGIC_UNSIGNED.all;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
+
 entity alu is
     Port ( rst : in  STD_LOGIC;
            clk : in  STD_LOGIC;
@@ -64,6 +65,7 @@ begin
         integer_B := conv_integer(operand_B);
         case alu_state is
             when iA =>
+                flag <= '0';
                 operand_A(15 downto 0) <= sw;
                 result(15 downto 0) <= sw;
                 alu_state <= iB;
@@ -86,14 +88,15 @@ begin
                     when "0000010000000000" =>
                         result <= not operand_A;
                     when "0000001000000000" =>
-                        result <= to_stdlogicvector(to_bitvector(operand_A) sll integer_B);
-                    when "0000000100000000" =>
                         result <= to_stdlogicvector(to_bitvector(operand_A) srl integer_B);
+                    when "0000000100000000" =>
+                        result <= to_stdlogicvector(to_bitvector(operand_A) sll integer_B);
                     when "0000000010000000" =>
-                        result <= to_stdlogicvector(to_bitvector(operand_A) sla integer_B);
+                        result(15 downto 0) <= to_stdlogicvector(to_bitvector(operand_A(15 downto 0)) sra integer_B);
                     when "0000000001000000" =>
-                        result <= to_stdlogicvector(to_bitvector(operand_A) rol integer_B);
-                    when others => null;
+                        result(15 downto 0) <= to_stdlogicvector(to_bitvector(operand_A(15 downto 0)) rol integer_B);
+                    when others => 
+                        flag <= '1';
                 end case; 
                 alu_state <= oFLAG;
             when oFLAG=>
