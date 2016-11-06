@@ -146,7 +146,7 @@ begin
                     ram1_we <= '1';
                     ram1_data <= high_z;
 					ram1_addr <= address(loop_state);
-					led <= ram1_data after 20ns;
+					led <= ram1_data;
 
                     --state change
                     if loop_state < 9 then
@@ -174,6 +174,7 @@ begin
                     ram2_en <= '0';
                     ram2_we <= '1';
                     ram2_oe <= '0';
+                    ram2_data <= high_z;
                     ram2_addr(15 downto 0) <= address(loop_state);
                     led <= ram2_data;
                     if loop_state < 9 then
