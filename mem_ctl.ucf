@@ -74,23 +74,6 @@ NET "ram2_data[3]" LOC = T14;
 NET "ram2_data[2]" LOC = T15;
 NET "ram2_data[0]" LOC = U13;
 NET "ram2_data[1]" LOC = T16;
-NET "sw[15]" LOC = T7;
-NET "sw[14]" LOC = R7;
-NET "sw[13]" LOC = U8;
-NET "sw[12]" LOC = V4;
-NET "sw[11]" LOC = V3;
-NET "sw[10]" LOC = V2;
-NET "sw[9]" LOC = U1;
-NET "sw[8]" LOC = R4;
-NET "sw[7]" LOC = R1;
-NET "sw[6]" LOC = N2;
-NET "sw[5]" LOC = N1;
-NET "sw[4]" LOC = M1;
-NET "sw[3]" LOC = K7;
-NET "sw[2]" LOC = K2;
-NET "sw[1]" LOC = J7;
-NET "sw[0]" LOC = J6;
-
 
 NET "led[15]" LOC = A14;
 NET "led[14]" LOC = E13;
@@ -109,9 +92,11 @@ NET "led[2]" LOC = A11;
 NET "led[1]" LOC = E10;
 NET "led[0]" LOC = D10;
 
-
+NET "data_ready" LOC = A16;
 NET "rdn" LOC = C14;
 NET "wrn" LOC = U5;
+NET "tbre" LOC = D14;
+NET "tsre" LOC = N9;
 
 # PlanAhead Generated physical constraints 
 
