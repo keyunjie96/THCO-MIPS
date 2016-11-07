@@ -147,10 +147,10 @@ begin
                                         address(0)(7 downto 0) <= ram1_data(7 downto 0);
                                         loop_state <= loop_state + 1;
                                     when 2 =>
-                                        address(0)(15 downto 8) <= ram1_data(7 downto 0);
+                                        data(0)(15 downto 8) <= ram1_data(7 downto 0);
                                         loop_state <= loop_state + 1;
                                     when 3 => 
-                                        address(0)(7 downto 0) <= ram1_data(7 downto 0);
+                                        data(0)(7 downto 0) <= ram1_data(7 downto 0);
                                         --set control ram1 control signal
                                         ram1_en <= '0';
                                         ram1_we <= '1';
@@ -208,6 +208,7 @@ begin
                     ram1_data <= high_z;
 					ram1_addr <= address(loop_state);
 					led <= ram1_data;
+                    data(loop_state) <= ram1_data;
 
                     --state change
                     if loop_state < 9 then
@@ -257,6 +258,7 @@ begin
                         when w1 =>
                             wrn <= '0';
                             case loop_state is
+                                -- ram1_data <= ram2_data;
                                 when 0 => ram1_data(7 downto 0) <= ram2_data(15 downto 8);
                                 when 1 => ram1_data(7 downto 0) <= ram2_data(7 downto 0);
                                 when others => null;
