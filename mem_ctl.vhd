@@ -208,7 +208,7 @@ begin
                     ram1_data <= high_z;
 					ram1_addr <= address(loop_state);
 					led <= ram1_data;
-                    data(loop_state) <= ram1_data;
+                    data(loop_state-1) <= ram1_data;
 
                     --state change
                     if loop_state < 9 then
