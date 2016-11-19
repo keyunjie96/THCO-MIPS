@@ -2,27 +2,27 @@
 
 module regfile(
 
-	input	wire										clk,
-	input wire										rst,
+	input wire					clk,
+	input wire					rst,
 
 	// 写端口
-	input wire										wEnable_i,
-	input wire[`RegAddrBus]				wAddr_i,
-	input wire[`RegBus]						wData_i,
+	input wire					wEnable_i,
+	input wire[`RegAddrBus]		wAddr_i,
+	input wire[`RegBus]			wData_i,
 
   // 读端口1
-	input wire										rEnable1_i,
-	input wire[`RegAddrBus]			  rAddr1_i,
-	output reg[`RegBus]           rData1_o,
+	input wire					rEnable1_i,
+	input wire[`RegAddrBus]		rAddr1_i,
+	output reg[`RegBus]         rData1_o,
 
   // 读端口2
-	input wire										rEnable2_i,
-	input wire[`RegAddrBus]			  rAddr2_i,
-	output reg[`RegBus]           rData2_o
+	input wire					rEnable2_i,
+	input wire[`RegAddrBus]		rAddr2_i,
+	output reg[`RegBus]         rData2_o
 
 );
 
-reg[`RegBus] regs[0:`RegNum-1];
+reg[`RegBus] regs[0:`RegNum-1]
 
 // 写操作
 always @ (posedge clk) begin

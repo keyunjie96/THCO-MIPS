@@ -34,8 +34,8 @@ wire id_wReg_o;
 wire[`AluOpBus] ex_aluOp_i;
 wire[`RegBus] ex_operand1_i;
 wire[`RegBus] ex_operand2_i;
-wire reg ex_wReg_i;
-wire reg[`RegAddrBus] ex_wRegAddr_i;
+wire ex_wReg_i;
+wire[`RegAddrBus] ex_wRegAddr_i;
 
 // 连接EX和EX/MEM
 wire[`RegBus] ex_wData_o;

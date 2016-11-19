@@ -45,6 +45,16 @@ src/test.c
 *_summary.xml
 *_usage.xml
 *_xst.xrpt
+*.log
+*.debug
+*.tcl
+*.xml
+*.edif
+*.psg
+*.wpc
+*.ppr
+*.jou
+
 
 # iMPACT generated files
 _impactbatch.log

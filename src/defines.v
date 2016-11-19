@@ -26,8 +26,8 @@
 
 `define RegAddrBus          3:0                     // 寄存器地址，4位
 `define RegBus              15:0                    // 寄存器数据宽，16位
-`define RegNum              8                       // 寄存器数量
-`define RegZero             3'b000                  // 0号寄存器地址
+`define RegNum              16                       // 寄存器数量
+`define RegZero             4'b0000                  // 0号寄存器地址
 
 // 指令存储器
 `define InstMemNum          128                     // 指令存储器ROM大小
