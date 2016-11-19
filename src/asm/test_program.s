@@ -1,0 +1,4 @@
+addiu3 $0, $1, 0x1
+addiu3 $0, $2, 0x2
+addiu3 $0, $3, 0xc
+addiu3 $0, $4, 0xf
