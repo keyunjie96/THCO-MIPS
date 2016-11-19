@@ -1,3 +1,7 @@
+# ATOM files
+src/.DS_Store
+# irrelevant files
+src/test.c
 # intermediate build files
 *.bgn
 *.bit
