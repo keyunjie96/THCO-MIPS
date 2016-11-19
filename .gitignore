@@ -1,4 +1,5 @@
 # ATOM files
+.DS_Store
 src/.DS_Store
 # irrelevant files
 src/test.c

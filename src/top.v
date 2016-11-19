@@ -1,6 +1,6 @@
 `include "defines.v"
 
-module sopc (
+module top (
   input wire clk,
   input wire rst
 );
@@ -23,4 +23,4 @@ inst_rom inst_rom0(
   .inst(inst)
 );
 
-endmodule // sopc
+endmodule // top
