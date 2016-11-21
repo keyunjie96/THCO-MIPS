@@ -15,6 +15,7 @@
 
 `define InstAddrBus         15:0                    // 指令ROM地址线宽度
 `define InstBus             15:0                    // 指令ROM数据线宽
+`define InstWordBus         7:0                // 指令ROM数据单字线宽
 `define AluOpBus            3:0                     // ALU操作码宽度
 
 // ALU操作码
@@ -31,3 +32,6 @@
 
 // 指令存储器
 `define InstMemNum          128                     // 指令存储器ROM大小
+`define InstMemNumLog2      8
+`define InstHi              15:8                   //指令低位部分
+`define InstLo              7:0                    //指令高位部分

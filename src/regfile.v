@@ -10,26 +10,29 @@ module regfile(
 	input wire[`RegAddrBus]		wAddr_i,
 	input wire[`RegBus]			wData_i,
 
-  // 读端口1
+  	// 读端口1
 	input wire					rEnable1_i,
 	input wire[`RegAddrBus]		rAddr1_i,
 	output reg[`RegBus]         rData1_o,
 
-  // 读端口2
+  	// 读端口2
 	input wire					rEnable2_i,
 	input wire[`RegAddrBus]		rAddr2_i,
 	output reg[`RegBus]         rData2_o
 
 );
 
-reg[`RegBus] regs[0:`RegNum-1]
+reg[`RegBus] regs[0:`RegNum-1];	
 
 // 写操作
 always @ (posedge clk) begin
-  if (rst == `RstDisable) begin
-    if((wEnable_i == `WriteEnable) && wAddr_i != `RegZero) begin
+  	if (rst == `RstDisable) begin
+    	if((wEnable_i == `WriteEnable) && wAddr_i != `RegZero) begin
 			regs[wAddr_i] <= wData_i;
 		end
+	end
+	else begin
+		regs[0] <= `ZeroWord;
 	end
 end
 

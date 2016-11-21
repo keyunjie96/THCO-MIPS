@@ -12,9 +12,9 @@ wire rom_ce;
 cpu cpu0(
   .clk(clk),
   .rst(rst),
-  .romData_i(inst),
-  .romAddr_o(inst_addr),
-  .romEnable_o(rom_ce)
+  .instData_i(inst),
+  .instAddr_o(inst_addr),
+  .instEnable_o(rom_ce)
 );
 
 inst_rom inst_rom0(
