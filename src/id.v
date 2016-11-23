@@ -1,6 +1,8 @@
 `include "defines.v"
 
 module id (
+  input wire                  rst,
+
   // 读到的指令
   input wire[`InstAddrBus]    instAddr_i,       // 指令地址
   input wire[`InstBus]        inst_i,           // 指令
@@ -9,6 +11,16 @@ module id (
   input wire[`RegBus]         reg1Data_i,       // reg1数据
   input wire[`RegBus]         reg2Data_i,       // reg2数据
 
+  //接收从执行阶段的运算结果
+  input wire                  wReg_ex_i,        //是否有要写入寄存器
+  input wire[`RegBus]         wData_ex_i,       //执行阶段结果
+  input wire[`RegAddrBus]     wRegAddr_ex_i,    //待写入寄存器地址
+
+  //接收从访存阶段的运算结果
+  input wire                  wReg_mem_i,        //是否有要写入寄存器
+  input wire[`RegBus]         wData_mem_i,       //执行阶段结果
+  input wire[`RegAddrBus]     wRegAddr_mem_i,    //待写入寄存器地址
+  
   // 写到寄存器堆的数据
   output reg                  reg1Enable_o,     // reg1读使能信号
   output reg                  reg2Enable_o,     // reg2读使能信号
@@ -25,15 +37,55 @@ module id (
   output reg                  wReg_o            // 是否有目的寄存器
 );
 
+//指令和操作码
 wire[5:0] op = inst_i[15:11];
+wire[`FunctBus3] frontFunct3 = inst_i[10:8];
+wire[`FunctBus2] backFunct2 = inst_i[`FunctBus2];
+wire[`FunctBus5] backFunct5 = inst_i[`FunctBus5];
+wire[`FunctBus8] backFunct8 = inst_i[`FunctBus8];
+wire[`FunctBus11] backFunct11 = inst_i[`FunctBus11];
+
+
+//操作数
 wire[`RegAddrBus] rx = inst_i[10:8];
 wire[`RegAddrBus] ry = inst_i[7:5];
-wire[`RegBus] sgnImm5 = {{11{inst_i[4]}}, inst_i[4:0]}; // 符号扩展5位立即数
-reg[`RegBus] reg1Data;
+wire[`RegAddrBus] rz = inst_i[4:2];
 
-// 旁路选择
+//立即数
+wire[`RegBus] sgnImm5 = {{11{inst_i[4]}}, inst_i[4:0]}; // 符号扩展5位立即数
+wire[`RegBus] sgnImm8 = {{8{inst_i[7]}}, inst_i[7:0]}; // 符号扩展8位立即数
+wire[2:0] Imm3 = inst_i[4:2];
+reg[`RegBus] reg1Data;
+reg[`RegBus] reg2Data;
+
+// 旁路选择 rx
 always @ ( * ) begin
-  reg1Data = reg1Data_i;    // TODO: 此处不完整
+  if (rst == `RstEnable) begin
+    reg1Data <= `ZeroWord;    
+  end else if((reg1Enable_o == `Enable) && (wReg_ex_i == `Enable) && (wRegAddr_ex_i == rx)) begin
+    reg1Data <= wData_ex_i;
+  end else if((reg1Enable_o == `Enable) && (wReg_mem_i == `Enable) && (wRegAddr_mem_i == rx)) begin
+    reg1Data <= wData_mem_i;
+  end else if(reg1Enable_o == `Enable) begin
+    reg1Data <= reg1Data_i;
+  end else begin
+    reg1Data <= `ZeroWord;
+  end
+end
+
+// 旁路选择 ry
+always @ ( * ) begin
+  if (rst == `RstEnable) begin
+    reg2Data <= `ZeroWord;    
+  end else if((reg2Enable_o == `Enable) && (wReg_ex_i == `Enable) && (wRegAddr_ex_i == ry)) begin
+    reg2Data <= wData_ex_i;
+  end else if((reg2Enable_o == `Enable) && (wReg_mem_i == `Enable) && (wRegAddr_mem_i == ry)) begin
+    reg2Data <= wData_mem_i;
+  end else if(reg2Enable_o == `Enable) begin
+    reg2Data <= reg2Data_i;
+  end else begin
+    reg2Data <= `ZeroWord;
+  end
 end
 
 // 译码
@@ -42,8 +94,8 @@ always @ ( * ) begin
     `OP_ADDIU3: begin
       // reg
       reg1Enable_o = `Enable;
-      reg1Addr_o = rx;
       reg2Enable_o = `Disable;
+      reg1Addr_o = rx;
       // EX
       operand1_o = reg1Data;
       operand2_o = sgnImm5;

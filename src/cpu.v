@@ -22,7 +22,6 @@ wire reg_rEnable2_i;
 wire[`RegAddrBus] reg_rAddr2_i;
 wire[`RegBus] reg_rData2_o;
 
-
 // 连接ID和ID/EX
 wire[`AluOpBus] id_aluOp_o;
 wire[`RegBus] id_operand1_o;
@@ -37,12 +36,12 @@ wire[`RegBus] ex_operand2_i;
 wire ex_wReg_i;
 wire[`RegAddrBus] ex_wRegAddr_i;
 
-// 连接EX和EX/MEM
+// 连接EX和EX/MEM，EX和ID
 wire[`RegBus] ex_wData_o;
 wire ex_wReg_o;
 wire[`RegAddrBus] ex_wRegAddr_o;
 
-// 连接EX/MEM和MEM
+// 连接EX/MEM和MEM，MEM和ID
 wire[`RegBus] mem_wData_i;
 wire mem_wReg_i;
 wire[`RegAddrBus] mem_wRegAddr_i;
@@ -78,12 +77,23 @@ if_id if_id0(
 );
 
 id id0(
+  .rst(rst),
   // 读到的指令
   .inst_i(id_inst_i),
   .instAddr_i(id_instAddr_i),
   // 从寄存器堆读的数据
   .reg1Data_i(reg_rData1_o),
   .reg2Data_i(reg_rData2_o),
+  //接收从执行阶段的运算结果
+  .wReg_ex_i(ex_wReg_o),              //是否有要写入寄存器
+  .wData_ex_i(ex_wData_o),            //执行阶段结果
+  .wRegAddr_ex_i(ex_wRegAddr_o),      //待写入寄存器地址
+
+  //接收从访存阶段的运算结果
+  .wReg_mem_i(mem_wReg_o),            //是否有要写入寄存器
+  .wData_mem_i(mem_wData_o),          //执行阶段结果
+  .wRegAddr_mem_i(mem_wRegAddr_o),    //待写入寄存器地址
+
   // 写到寄存器堆的数据
   .reg1Enable_o(reg_rEnable1_i),
   .reg2Enable_o(reg_rEnable2_i),
