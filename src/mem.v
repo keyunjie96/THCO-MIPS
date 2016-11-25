@@ -16,13 +16,13 @@ module mem (
 
 // 访存
 always @ ( * ) begin
-  wData_o = wData_i;
+  wData_o <= wData_i;
 end
 
 // 传递控制信号和数据
 always @ ( * ) begin
-  wReg_o = wReg_i;
-  wRegAddr_o = wRegAddr_i;
+  wReg_o <= wReg_i;
+  wRegAddr_o <= wRegAddr_i;
 end
 
 endmodule // mem

@@ -5,6 +5,11 @@ module regfile(
 	input wire					clk,
 	input wire					rst,
 
+	// 执行阶段要写入的地址，主要是BTEQZ需要在ID段进行判断，而上条指令尚在EX段
+	input wire 					wEnable_ex_i,
+	input wire[`RegAddrBus]		wAddr_ex_i,
+	input wire[`RegBus]			wData_ex_i,
+
 	// 写端口
 	input wire					wEnable_i,
 	input wire[`RegAddrBus]		wAddr_i,
@@ -39,40 +44,48 @@ end
 // 读端口1
 always @ ( * ) begin
 	if (rst == `RstEnable) begin
-		rData1_o = `ZeroWord;
+		rData1_o <= `ZeroWord;
 	end
 	else if (rAddr1_i == `RegZero) begin
-		rData1_o = `ZeroWord;
+		rData1_o <= `ZeroWord;
 	end
 	else if ((rAddr1_i == wAddr_i) && (wEnable_i == `WriteEnable)
 		&& (rEnable1_i == `ReadEnable)) begin
-			rData1_o = wData_i;		// TODO: 验证此处行为，同周期内同时读和写，读出的数是什么？
+			rData1_o <= wData_i;		// TODO: 验证此处行为，同周期内同时读和写，读出的数是什么？
+	end
+	else if ((rAddr1_i == wAddr_ex_i) && (wEnable_i == `WriteEnable)
+		&& (rEnable1_i == `ReadEnable)) begin
+		rData1_o <= wData_ex_i;
 	end
 	else if (rEnable1_i == `ReadEnable) begin
-		rData1_o = regs[rAddr1_i];
+		rData1_o <= regs[rAddr1_i];
 	end
 	else begin
-		rData1_o = `ZeroWord;
+		rData1_o <= `ZeroWord;
 	end
 end
 
 // 读端口2
 always @ ( * ) begin
 	if (rst == `RstEnable) begin
-		rData2_o = `ZeroWord;
+		rData2_o <= `ZeroWord;
 	end
 	else if (rAddr2_i == `RegZero) begin
-		rData2_o = `ZeroWord;
+		rData2_o <= `ZeroWord;
 	end
 	else if ((rAddr2_i == wAddr_i) && (wEnable_i == `WriteEnable)
 		&& (rEnable2_i == `ReadEnable)) begin
-			rData2_o = wData_i;
+			rData2_o <= wData_i;
+	end
+	else if ((rAddr2_i == wAddr_ex_i) && (wEnable_i == `WriteEnable)
+		&& (rEnable2_i == `ReadEnable)) begin
+		rData2_o <= wData_ex_i;
 	end
 	else if (rEnable2_i == `ReadEnable) begin
-		rData2_o = regs[rAddr2_i];
+		rData2_o <= regs[rAddr2_i];
 	end
 	else begin
-		rData2_o = `ZeroWord;
+		rData2_o <= `ZeroWord;
 	end
 end
 

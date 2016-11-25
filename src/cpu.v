@@ -14,6 +14,11 @@ wire[`InstAddrBus] pc;
 wire[`InstAddrBus] id_inst_i;
 wire[`InstBus] id_instAddr_i;
 
+// 连接pc和ID
+wire id_in_delay_slot_i;
+wire id_jump_o;
+wire[`RegBus] id_jump_target_addr_o;
+
 // 连接ID和regfile
 wire reg_rEnable1_i;
 wire[`RegAddrBus] reg_rAddr1_i;
@@ -60,6 +65,9 @@ wire[`RegBus] reg_wData_i;
 pc_reg pc_reg0(
   .clk(clk),
   .rst(rst),
+  .jump_i(id_jump_o),
+  .jump_target_addr_i(id_jump_target_addr_o),
+  .in_delay_slot_o(id_in_delay_slot_i),
   .pc(pc),
   .ce(instEnable_o)
 );
@@ -84,6 +92,8 @@ id id0(
   // 从寄存器堆读的数据
   .reg1Data_i(reg_rData1_o),
   .reg2Data_i(reg_rData2_o),
+  // 直接接收pc寄存器的数据和信号
+  .in_delay_slot_i(id_in_delay_slot_i),
   //接收从执行阶段的运算结果
   .wReg_ex_i(ex_wReg_o),              //是否有要写入寄存器
   .wData_ex_i(ex_wData_o),            //执行阶段结果
@@ -99,6 +109,9 @@ id id0(
   .reg2Enable_o(reg_rEnable2_i),
   .reg1Addr_o(reg_rAddr1_i),
   .reg2Addr_o(reg_rAddr2_i),
+  //直接送往pc寄存器的数据和控制信号
+  .jump_o(id_jump_o),
+  .jump_target_addr_o(id_jump_target_addr_o),
   // 送往执行段的数据和控制信号
   .operand1_o(id_operand1_o),
   .operand2_o(id_operand2_o),
@@ -111,17 +124,21 @@ id id0(
 regfile regfile0(
   .clk(clk),
   .rst(rst),
+  // 执行阶段要写入的地址，主要是BTEQZ需要在ID段进行判断，而上条指令尚在EX段
+  .wEnable_ex_i(ex_wReg_o),
+  .wAddr_ex_i(ex_wRegAddr_o),
+  .wData_ex_i(ex_wData_o),
   // 写端口
   .wEnable_i(reg_wEnable_i),
   .wAddr_i(reg_wAddr_i),
   .wData_i(reg_wData_i),
   // 读端口1
-  .rEnable1_i(reg_rEnable2_i),
-  .rEnable2_i(reg_rEnable2_i),
+  .rEnable1_i(reg_rEnable1_i),
   .rAddr1_i(reg_rAddr1_i),
-  // 读端口2
-  .rAddr2_i(reg_rAddr2_i),
   .rData1_o(reg_rData1_o),
+  // 读端口2
+  .rEnable2_i(reg_rEnable2_i),
+  .rAddr2_i(reg_rAddr2_i),
   .rData2_o(reg_rData2_o)
 );
 

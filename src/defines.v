@@ -1,7 +1,7 @@
 `define ChipDisable         1'b0                    // 芯片禁止
 `define ChipEnable          1'b1                    // 芯片使能
-`define RstDisable          1'b0                    // 芯片禁止
-`define RstEnable           1'b1                    // 芯片使能
+`define RstDisable          1'b1                    // 芯片禁止
+`define RstEnable           1'b0                    // 芯片使能
 `define ZeroWord            16'h0000                // 16位0
 `define WriteEnable         1'b1                    // 使能写
 `define WriteDisable        1'b0                    // 禁止写
@@ -11,6 +11,7 @@
 `define NoStop              1'b0
 `define Enable              1'b1
 `define Disable             1'b0
+`define PcUnit              2'b10
 
 
 `define InstAddrBus         15:0                    // 指令ROM地址线宽度
@@ -26,6 +27,14 @@
 // ALU操作码
 `define ALU_NOP             4'b0000                 // NOP
 `define ALU_ADD             4'b0001
+`define ALU_SUB             4'b0010
+`define ALU_AND             4'b0011
+`define ALU_OR              4'b0100
+`define ALU_NOT             4'b0101
+`define ALU_SLL             4'b0110
+`define ALU_SRA             4'b0111
+`define ALU_SLT             4'b1000
+`define ALU_CMP             4'b1001
 
 // 指令op段
 `define OP_NOP              5'b00001
@@ -48,6 +57,7 @@
                                                     //MFPC
                                                     //JR JRRA JALR
 `define OP_MFIH_MTIH        5'b11110                //MFIH MTIH
+
 //指令funct段
 `define FUNCT_SLL           2'b00
 `define FUNCT_SRA           2'b11
@@ -63,12 +73,18 @@
 `define FUNCT_CMP           5'b01010
 `define FUNCT_JR            8'b00000000
 `define FUNCT_JRRA          11'b00000100000
-`define FUNCT_JRRA	        11'b00000100000
 `define FUNCT_JALR	        8'b11000000
 `define FUNCT_MFIH	        8'b00000000
 `define FUNCT_MTIH	        8'b00000001
 
+//特殊寄存器
+// `define REG_PC              4'b1000
+`define REG_SP              4'b1001
+`define REG_IH              4'b1010
+`define REG_RA              4'b1011
+`define REG_T               4'b1100
 
+//寄存器参数
 `define RegAddrBus          3:0                     // 寄存器地址，4位
 `define RegBus              15:0                    // 寄存器数据宽，16位
 `define RegNum              16                      // 寄存器数量
