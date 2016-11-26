@@ -30,15 +30,17 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity uart is
-    Port ( clk : in  STD_LOGIC;
-           rst : in  STD_LOGIC;
-           sw : in  STD_LOGIC_VECTOR (7 downto 0);
+    Port ( clk : in  STD_LOGIC; 
+           rst : in  STD_LOGIC; 
+           send_data : in  STD_LOGIC_VECTOR (7 downto 0); --*
            data_ready : in  STD_LOGIC;
+           send_data_complete : out STD_LOGIC; --*1完成
+           receive_data_complete : out STD_LOGIC; --*1完成
            tbre : in  STD_LOGIC;
            tsre : in  STD_LOGIC;
-           fout : out  STD_LOGIC_VECTOR (7 downto 0);
-           en1 : in STD_LOGIC;
-           en2 : in STD_LOGIC;
+           receive_data : out  STD_LOGIC_VECTOR (7 downto 0); --*
+           en1 : in STD_LOGIC; --*1写串口，0读串口
+           en2 : in STD_LOGIC; --*1串口打开
            state_show : out STD_LOGIC_VECTOR(7 downto 0);
            ram1oe : out  STD_LOGIC;
            ram1we : out  STD_LOGIC;
@@ -49,7 +51,7 @@ entity uart is
 end uart;
 
 architecture Behavioral of uart is
-------------------�ź�����------------------------
+------------------信号声明------------------------
 type big_state_machine is (read_uart, write_uart); 
 type read_state_machine is (r0, r1, r2, r3);
 type write_state_machine is (w0, w1, w2, w3, w4, w5);
@@ -62,6 +64,8 @@ state_show(7) <= en1;
 state_show(6) <= en2;
 process(rst, clk) is
 begin
+    send_data_complete <= '1';
+    receive_data_complete <= '1';
     if rst = '0' then
         ram1en <= '1';
         ram1oe <= '1';
@@ -96,9 +100,10 @@ begin
                     end if;
                     state_show(4 downto 0) <= "00100";
                 when r3 =>
-                    fout <= ram1data;
+                    receive_data <= ram1data;
                     read_state <= r1;
                     state_show(4 downto 0) <= "00010";
+                    receive_data_complete <= '1';
             end case;
         elsif big_state = write_uart then 
             case write_state is
@@ -108,7 +113,7 @@ begin
                     state_show(4 downto 0) <= "10000";
                 when w1 =>
                     wrn <= '0';
-                    ram1data <= sw;
+                    ram1data <= send_data;
                     write_state <= w2;
                     state_show(4 downto 0) <= "01000";
                 when w2 =>
@@ -124,6 +129,7 @@ begin
                     if tsre = '1' then 
                         write_state <= w5;
                         state_show(4 downto 0) <= "00001";
+                        send_data_complete <= '1';
                     end if;
                 when w5 => null;
             end case;
