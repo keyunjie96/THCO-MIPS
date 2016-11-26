@@ -43,7 +43,7 @@ module test_top;
 	initial begin
 		rst = `RstEnable;
 		#15 rst = `RstDisable;
-		#200 $stop;
+		#600 $stop;
 	end
       
 endmodule

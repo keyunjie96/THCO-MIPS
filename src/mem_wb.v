@@ -4,6 +4,7 @@ module mem_wb (
   // input
   input wire                clk,
   input wire                rst,
+  input wire[`StallRegBus]  stall,
   // WB
   input wire[`RegBus]       wData_i,
   input wire                wReg_i,
@@ -17,12 +18,12 @@ module mem_wb (
 );
 
 always @ (posedge clk) begin
-  if (rst == `RstEnable) begin
+  if ((rst == `RstEnable) || ((stall[4] == `Stop) & (stall[5] == `NoStop))) begin
     wData_o <= `ZeroWord;
     wReg_o <= `Disable;
     wRegAddr_o <= `RegZero;
   end
-  else begin
+  else if (stall[4] == `NoStop) begin
     wData_o <= wData_i;
     wReg_o <= wReg_i;
     wRegAddr_o <= wRegAddr_i;

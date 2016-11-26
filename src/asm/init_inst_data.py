@@ -33,4 +33,4 @@ insert_point = template.index('/**instructions**/\n') + 1
 template[insert_point:insert_point] = inst_rom_text
 
 with open(output_file, 'w') as f:
-    f.write(''.join(template))ß
+    f.write(''.join(template))

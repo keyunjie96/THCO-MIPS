@@ -10,111 +10,153 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="26" />
+   <WVObjectSize size="37" />
    <wvobject fp_name="/test_top/clk" type="logic" db_ref_id="1">
-      <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
-      <obj_property name="label">clk</obj_property>
    </wvobject>
    <wvobject fp_name="/test_top/rst" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/rom_ce" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">rom_ce</obj_property>
-      <obj_property name="ObjectShortName">rom_ce</obj_property>
-   </wvobject>
-   <wvobject fp_name="/test_top/uut/inst" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">inst[15:0]</obj_property>
-      <obj_property name="ObjectShortName">inst[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/test_top/uut/inst_addr" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">inst_addr[15:0]</obj_property>
-      <obj_property name="ObjectShortName">inst_addr[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/test_top/uut/inst_rom0/inst_mem" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">inst_mem[0:127,7:0]</obj_property>
-      <obj_property name="ObjectShortName">inst_mem[0:127,7:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/test_top/uut/cpu0/pc_reg0/pc" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">pc[15:0]</obj_property>
       <obj_property name="ObjectShortName">pc[15:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/inst_rom0/inst" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">inst[15:0]</obj_property>
-      <obj_property name="ObjectShortName">inst[15:0]</obj_property>
+   <wvobject fp_name="/test_top/uut/cpu0/ctrl0/stall_request_from_id" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">stall_request_from_id</obj_property>
+      <obj_property name="ObjectShortName">stall_request_from_id</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/id0/rx" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">rx[3:0]</obj_property>
-      <obj_property name="ObjectShortName">rx[3:0]</obj_property>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/aluOp_ex_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">aluOp_ex_i[3:0]</obj_property>
+      <obj_property name="ObjectShortName">aluOp_ex_i[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/id0/ry" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">ry[3:0]</obj_property>
-      <obj_property name="ObjectShortName">ry[3:0]</obj_property>
+   <wvobject fp_name="/test_top/uut/cpu0/ctrl0/stall_request_from_mem" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">stall_request_from_mem</obj_property>
+      <obj_property name="ObjectShortName">stall_request_from_mem</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/id0/op" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">op[5:0]</obj_property>
-      <obj_property name="ObjectShortName">op[5:0]</obj_property>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/stall_request" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">stall_request</obj_property>
+      <obj_property name="ObjectShortName">stall_request</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/id0/sgnImm5" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">sgnImm5[15:0]</obj_property>
-      <obj_property name="ObjectShortName">sgnImm5[15:0]</obj_property>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/stall_request_from_reg1" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">stall_request_from_reg1</obj_property>
+      <obj_property name="ObjectShortName">stall_request_from_reg1</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/id_ex0/wReg_o" type="logic" db_ref_id="1">
+   <wvobject fp_name="/test_top/uut/cpu0/id0/stall_request_from_reg2" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">stall_request_from_reg2</obj_property>
+      <obj_property name="ObjectShortName">stall_request_from_reg2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/pc_reg0/stall" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">stall[5:0]</obj_property>
+      <obj_property name="ObjectShortName">stall[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/ctrl0/stallCtrl" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">stallCtrl[5:0]</obj_property>
+      <obj_property name="ObjectShortName">stallCtrl[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/pc_reg0/jump_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">jump_i</obj_property>
+      <obj_property name="ObjectShortName">jump_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/jump_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">jump_o</obj_property>
+      <obj_property name="ObjectShortName">jump_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/pc_reg0/in_delay_slot_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">in_delay_slot_o</obj_property>
+      <obj_property name="ObjectShortName">in_delay_slot_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/in_delay_slot_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">in_delay_slot_i</obj_property>
+      <obj_property name="ObjectShortName">in_delay_slot_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/jump_target_addr_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">jump_target_addr_o[15:0]</obj_property>
+      <obj_property name="ObjectShortName">jump_target_addr_o[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/pc_reg0/jump_target_addr_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">jump_target_addr_i[15:0]</obj_property>
+      <obj_property name="ObjectShortName">jump_target_addr_i[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/regfile0/regs" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">regs[0:15,15:0]</obj_property>
+      <obj_property name="ObjectShortName">regs[0:15,15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/inst_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">inst_i[15:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_i[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/instAddr_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">instAddr_i[15:0]</obj_property>
+      <obj_property name="ObjectShortName">instAddr_i[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/reg1Enable_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reg1Enable_o</obj_property>
+      <obj_property name="ObjectShortName">reg1Enable_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/reg2Enable_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reg2Enable_o</obj_property>
+      <obj_property name="ObjectShortName">reg2Enable_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/reg1Addr_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">reg1Addr_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">reg1Addr_o[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/reg2Addr_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">reg2Addr_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">reg2Addr_o[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/reg1Data" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">reg1Data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">reg1Data[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/operand1_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">operand1_o[15:0]</obj_property>
+      <obj_property name="ObjectShortName">operand1_o[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/operand2_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">operand2_o[15:0]</obj_property>
+      <obj_property name="ObjectShortName">operand2_o[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/aluOp_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">aluOp_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">aluOp_o[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/wReg_o" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">wReg_o</obj_property>
       <obj_property name="ObjectShortName">wReg_o</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/id_ex0/wRegAddr_o" type="array" db_ref_id="1">
+   <wvobject fp_name="/test_top/uut/cpu0/id0/wRegAddr_o" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">wRegAddr_o[3:0]</obj_property>
       <obj_property name="ObjectShortName">wRegAddr_o[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/regfile0/regs[1]" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">[1,15:0]</obj_property>
-      <obj_property name="ObjectShortName">regs[1,15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/regfile0/regs[2]" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">[2,15:0]</obj_property>
-      <obj_property name="ObjectShortName">regs[2,15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/regfile0/regs[3]" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">[3,15:0]</obj_property>
-      <obj_property name="ObjectShortName">regs[3,15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/mem_wb0/wReg_o" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">wReg_o</obj_property>
-      <obj_property name="ObjectShortName">wReg_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/mem_wb0/wRegAddr_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">wRegAddr_o[3:0]</obj_property>
-      <obj_property name="ObjectShortName">wRegAddr_o[3:0]</obj_property>
+   <wvobject fp_name="/test_top/uut/cpu0/regfile0/rAddr1_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">rAddr1_i[3:0]</obj_property>
+      <obj_property name="ObjectShortName">rAddr1_i[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/test_top/uut/cpu0/regfile0/wAddr_i" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">wAddr_i[3:0]</obj_property>
       <obj_property name="ObjectShortName">wAddr_i[3:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/regfile0/wData_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">wData_i[15:0]</obj_property>
-      <obj_property name="ObjectShortName">wData_i[15:0]</obj_property>
+   <wvobject fp_name="/test_top/uut/cpu0/regfile0/wEnable_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wEnable_i</obj_property>
+      <obj_property name="ObjectShortName">wEnable_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/ex0/wData_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">wData_o[15:0]</obj_property>
-      <obj_property name="ObjectShortName">wData_o[15:0]</obj_property>
+   <wvobject fp_name="/test_top/uut/cpu0/regfile0/rEnable1_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rEnable1_i</obj_property>
+      <obj_property name="ObjectShortName">rEnable1_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/ex0/operand2_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">operand2_i[15:0]</obj_property>
-      <obj_property name="ObjectShortName">operand2_i[15:0]</obj_property>
+   <wvobject fp_name="/test_top/uut/cpu0/regfile0/rData1_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">rData1_o[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rData1_o[15:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/ex0/operand1_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">operand1_i[15:0]</obj_property>
-      <obj_property name="ObjectShortName">operand1_i[15:0]</obj_property>
+   <wvobject fp_name="/test_top/uut/cpu0/mem0/rMem_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rMem_i</obj_property>
+      <obj_property name="ObjectShortName">rMem_i</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/id_ex0/operand1_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">operand1_o[15:0]</obj_property>
-      <obj_property name="ObjectShortName">operand1_o[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/test_top/uut/cpu0/id_ex0/operand2_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">operand2_o[15:0]</obj_property>
-      <obj_property name="ObjectShortName">operand2_o[15:0]</obj_property>
+   <wvobject fp_name="/test_top/uut/cpu0/mem0/wMem_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wMem_i</obj_property>
+      <obj_property name="ObjectShortName">wMem_i</obj_property>
    </wvobject>
 </wave_config>
