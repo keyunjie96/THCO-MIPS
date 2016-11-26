@@ -35,6 +35,8 @@
 `define ALU_SRA             4'b0111
 `define ALU_SLT             4'b1000
 `define ALU_CMP             4'b1001
+`define ALU_SW              4'b1010
+`define ALU_LW              4'b1011
 
 // 指令op段
 `define OP_NOP              5'b00001
@@ -89,6 +91,19 @@
 `define RegBus              15:0                    // 寄存器数据宽，16位
 `define RegNum              16                      // 寄存器数量
 `define RegZero             4'b0000                 // 0号寄存器地址
+
+//内存参数
+`define MemAddrBus          15:0
+`define MemBus              15:0
+// `define MemStatus           1:0
+// `define MemDisable          2'b00
+// `define MemRead             2'b01
+// `
+
+// 暂停
+`define StallRegBus         5:0
+`define StallDisable        6'b000000
+
 
 // 指令存储器
 `define InstMemNum          128                     // 指令存储器ROM大小

@@ -14,10 +14,11 @@ module id (
   // 直接接收pc寄存器的数据和信号
   input wire                  in_delay_slot_i,  //是否在延迟槽
 
-  //直接接收从执行阶段的运算结果
+  //直接接收从执行阶段的数据和控制信号
   input wire                  wReg_ex_i,        //是否有要写入寄存器
   input wire[`RegBus]         wData_ex_i,       //执行阶段结果
   input wire[`RegAddrBus]     wRegAddr_ex_i,    //待写入寄存器地址
+  input wire[`AluOpBus]       aluOp_ex_i,       //执行阶段运算情况
 
   //直接接收从访存阶段的运算结果
   input wire                  wReg_mem_i,        //是否有要写入寄存器
@@ -41,8 +42,15 @@ module id (
 
   // 送往写回段的数据和控制信号
   output reg[`RegAddrBus]     wRegAddr_o,       // 目的寄存器地址
-  output reg                  wReg_o            // 是否有目的寄存器
+  output reg                  wReg_o,           // 是否有目的寄存器
+
+  //控制流水线暂停
+  output reg                  stall_request
 );
+
+//暂停信号
+reg stall_request_from_reg1;
+reg stall_request_from_reg2;
 
 //指令和操作码
 wire[5:0] op = inst_i[15:11];
@@ -68,13 +76,23 @@ wire[`RegBus] Imm3 = {{15{1'b0}}, inst_i[4:2]};
 reg[`RegBus] reg1Data;
 reg[`RegBus] reg2Data;
 
+// assign stall_request = stall_request_from_reg1 | stall_request_from_reg2;
+
+always @ ( * ) begin
+  stall_request <= stall_request_from_reg1 | stall_request_from_reg2;
+end
+
 // 旁路选择 rx
 always @ ( * ) begin
+  stall_request_from_reg1 <= `Disable;
   if (rst == `RstEnable) begin
-    reg1Data <= `ZeroWord;    
-  end else if((reg1Enable_o == `Enable) && (wReg_ex_i == `Enable) && (wRegAddr_ex_i == rx)) begin
+    reg1Data <= `ZeroWord;
+  end else if ((reg1Enable_o == `Enable) && (aluOp_ex_i == `ALU_LW) && (wRegAddr_ex_i == reg1Addr_o)) begin
+    stall_request_from_reg1 <= `Enable;
+    reg1Data <= `ZeroWord;
+  end else if((reg1Enable_o == `Enable) && (wReg_ex_i == `Enable) && (wRegAddr_ex_i == reg1Addr_o)) begin
     reg1Data <= wData_ex_i;
-  end else if((reg1Enable_o == `Enable) && (wReg_mem_i == `Enable) && (wRegAddr_mem_i == rx)) begin
+  end else if((reg1Enable_o == `Enable) && (wReg_mem_i == `Enable) && (wRegAddr_mem_i == reg1Addr_o)) begin
     reg1Data <= wData_mem_i;
   end else if(reg1Enable_o == `Enable) begin
     reg1Data <= reg1Data_i;
@@ -85,11 +103,15 @@ end
 
 // 旁路选择 ry
 always @ ( * ) begin
+  stall_request_from_reg2 <= `Disable;
   if (rst == `RstEnable) begin
     reg2Data <= `ZeroWord;    
-  end else if((reg2Enable_o == `Enable) && (wReg_ex_i == `Enable) && (wRegAddr_ex_i == ry)) begin
+  end else if ((reg2Enable_o == `Enable) && (aluOp_ex_i == `ALU_LW) && (wRegAddr_ex_i == reg2Addr_o)) begin
+    stall_request_from_reg2 <= `Enable;
+    reg2Data <= `ZeroWord;
+  end else if((reg2Enable_o == `Enable) && (wReg_ex_i == `Enable) && (wRegAddr_ex_i == reg2Addr_o)) begin
     reg2Data <= wData_ex_i;
-  end else if((reg2Enable_o == `Enable) && (wReg_mem_i == `Enable) && (wRegAddr_mem_i == ry)) begin
+  end else if((reg2Enable_o == `Enable) && (wReg_mem_i == `Enable) && (wRegAddr_mem_i == reg2Addr_o)) begin
     reg2Data <= wData_mem_i;
   end else if(reg2Enable_o == `Enable) begin
     reg2Data <= reg2Data_i;
@@ -322,6 +344,64 @@ always @ ( * ) begin
       wReg_o <= `Enable;
       wRegAddr_o <= `REG_T;     
     end
+    `OP_LW_SP: begin
+      // reg
+      reg1Enable_o <= `Enable;
+      reg2Enable_o <= `Disable;
+      reg1Addr_o <= `REG_SP;
+      reg2Addr_o <= `ZeroWord;
+      // EX
+      operand1_o <= reg1Data;
+      operand2_o <= sgnImm8;
+      aluOp_o <= `ALU_LW;   
+      // WB
+      wReg_o <= `Enable;
+      wRegAddr_o <= rx;           
+    end
+    `OP_LW: begin
+      // reg
+      reg1Enable_o <= `Enable;
+      reg2Enable_o <= `Disable;
+      reg1Addr_o <= rx;
+      reg2Addr_o <= `ZeroWord;
+      // EX
+      operand1_o <= reg1Data;
+      operand2_o <= sgnImm5;
+      aluOp_o <= `ALU_LW;
+      // WB
+      wReg_o <= `Enable;
+      wRegAddr_o <= ry;           
+    end
+    `OP_SW_SP: begin
+      // reg
+      reg1Enable_o <= `Enable;
+      reg2Enable_o <= `Enable;
+      reg1Addr_o <= `REG_SP;
+      reg2Addr_o <= rx;
+      // EX
+      operand1_o <= reg1Data + sgnImm8;
+      operand2_o <= reg2Data;
+      aluOp_o <= `ALU_SW;
+      // WB
+      wReg_o <= `Disable;
+      wRegAddr_o <= `ZeroWord;           
+    end
+    `OP_SW: begin
+      // reg
+      reg1Enable_o <= `Enable;
+      reg2Enable_o <= `Enable;
+      reg1Addr_o <= rx;
+      reg2Addr_o <= ry;
+      // EX
+      operand1_o <= reg1Data + sgnImm8;
+      operand2_o <= reg2Data;
+      aluOp_o <= `ALU_SW;  
+      // WB
+      wReg_o <= `Disable;
+      wRegAddr_o <= `ZeroWord;            
+    end
+
+
     `OP_TRINARY: begin
       case(backFunct2)
         `FUNCT_ADDU: begin
@@ -466,8 +546,8 @@ always @ ( * ) begin
           reg1Addr_o <= rx;
           reg2Addr_o <= `ZeroWord;
           // EX
-          operand1_o <= reg1Data;
-          operand2_o <= 4'b0100;
+          operand1_o <= instAddr_i;
+          operand2_o <= `PcUnit;
           aluOp_o <= `ALU_ADD;
           // MEM (blank)
           // WB

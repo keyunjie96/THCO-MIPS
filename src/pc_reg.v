@@ -24,10 +24,12 @@ module pc_reg (
         if (ce == `ChipDisable) begin
             pc <= 16'h0000;
             in_delay_slot_o <= `Disable;
-        end else if(jump_i == `Enable) begin
-            pc <= jump_target_addr_i; 
-        end else begin
-            pc <= pc + `PcUnit;
+        end else if (stall[0] == `NoStop) begin
+            if(jump_i == `Enable ) begin
+                pc <= jump_target_addr_i; 
+            end else begin
+                pc <= pc + `PcUnit;
+            end
         end
     end
 

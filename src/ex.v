@@ -6,13 +6,19 @@ module ex (
   input wire[`AluOpBus]   aluOp_i,
   input wire[`RegBus]     operand1_i,
   input wire[`RegBus]     operand2_i,
-  // MEM (blank)
+  //MEM
   // WB
   input wire              wReg_i,
   input wire[`RegAddrBus] wRegAddr_i,
 
   // output
-  // MEM-WB
+  // ID
+  output reg[`AluOpBus]       aluOp_o,
+  // MEM
+  output reg[`MemAddrBus]     memAddr_o,       // 内存地址
+  output reg                  rMem_o,          // 是否读取内存
+  output reg                  wMem_o,          // 是否写入内存 
+  // MEM-WB  
   output reg[`RegBus]     wData_o,
   // WB
   output reg              wReg_o,
@@ -21,6 +27,8 @@ module ex (
 
 // ALU
 always @ ( * ) begin
+  rMem_o <= `ReadDisable;
+  wMem_o <= `WriteDisable;
   case (aluOp_i)
     `ALU_NOP: begin
     end
@@ -44,7 +52,7 @@ always @ ( * ) begin
         wData_o <=operand1_i << 8;
       end
       else begin
-        wData_o = operand1_i << operand2_i[2:0];
+        wData_o <= operand1_i << operand2_i[2:0];
       end
     end
     `ALU_SRA: begin
@@ -67,6 +75,15 @@ always @ ( * ) begin
     `ALU_CMP: begin
       wData_o <= operand1_i == operand2_i ? 1'b0 : 1'b1;
     end
+    `ALU_SW: begin
+      wMem_o <= `WriteEnable;
+      memAddr_o <= operand1_i;
+      wData_o <= operand2_i;
+    end
+    `ALU_LW: begin
+      rMem_o <= `ReadEnable;
+      memAddr_o <= operand1_i + operand2_i;
+    end
     default: begin
       wData_o <= `ZeroWord;
     end
@@ -75,6 +92,9 @@ end
 
 // 向下一级模块传递数据
 always @ ( * ) begin
+  // ID
+  aluOp_o <= aluOp_i;
+  // WB
   wReg_o <= wReg_i;
   wRegAddr_o <= wRegAddr_i;
 end

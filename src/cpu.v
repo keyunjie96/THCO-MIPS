@@ -9,6 +9,11 @@ module cpu (
   output wire           instEnable_o
 );
 
+// ctrl模块
+wire stall_request_from_id;
+wire stall_request_from_mem;
+wire[`StallRegBus]  stallCtrl;
+
 // 连接IF/ID和ID
 wire[`InstAddrBus] pc;
 wire[`InstAddrBus] id_inst_i;
@@ -31,8 +36,8 @@ wire[`RegBus] reg_rData2_o;
 wire[`AluOpBus] id_aluOp_o;
 wire[`RegBus] id_operand1_o;
 wire[`RegBus] id_operand2_o;
-wire[`RegAddrBus] id_wRegAddr_o;
 wire id_wReg_o;
+wire[`RegAddrBus] id_wRegAddr_o;
 
 // 连接ID/EX和EX
 wire[`AluOpBus] ex_aluOp_i;
@@ -42,12 +47,19 @@ wire ex_wReg_i;
 wire[`RegAddrBus] ex_wRegAddr_i;
 
 // 连接EX和EX/MEM，EX和ID
+wire[`AluOpBus] ex_aluOp_o;
 wire[`RegBus] ex_wData_o;
+wire[`MemAddrBus] ex_memAddr_o;
+wire ex_rMem_o;
+wire ex_wMem_o;
 wire ex_wReg_o;
 wire[`RegAddrBus] ex_wRegAddr_o;
 
 // 连接EX/MEM和MEM，MEM和ID
 wire[`RegBus] mem_wData_i;
+wire[`MemAddrBus] mem_memAddr_i;
+wire mem_rMem_i;
+wire mem_wMem_i;
 wire mem_wReg_i;
 wire[`RegAddrBus] mem_wRegAddr_i;
 
@@ -65,6 +77,7 @@ wire[`RegBus] reg_wData_i;
 pc_reg pc_reg0(
   .clk(clk),
   .rst(rst),
+  .stall(stallCtrl),
   .jump_i(id_jump_o),
   .jump_target_addr_i(id_jump_target_addr_o),
   .in_delay_slot_o(id_in_delay_slot_i),
@@ -74,10 +87,18 @@ pc_reg pc_reg0(
 
 assign instAddr_o = pc;
 
+ctrl ctrl0(
+  .rst(rst),
+  .stall_request_from_id(stall_request_from_id),
+  .stall_request_from_mem(stall_request_from_mem),
+  .stallCtrl(stallCtrl)
+);
+
 // IF/ID
 if_id if_id0(
   .clk(clk),
   .rst(rst),
+  .stall(stallCtrl),
   .inst_i(instData_i),
   .instAddr_i(pc),
   .inst_o(id_inst_i),
@@ -94,10 +115,11 @@ id id0(
   .reg2Data_i(reg_rData2_o),
   // 直接接收pc寄存器的数据和信号
   .in_delay_slot_i(id_in_delay_slot_i),
-  //接收从执行阶段的运算结果
+  //直接接收从执行阶段的数据和控制信号
   .wReg_ex_i(ex_wReg_o),              //是否有要写入寄存器
   .wData_ex_i(ex_wData_o),            //执行阶段结果
   .wRegAddr_ex_i(ex_wRegAddr_o),      //待写入寄存器地址
+  .aluOp_ex_i(ex_aluOp_o),
 
   //接收从访存阶段的运算结果
   .wReg_mem_i(mem_wReg_o),            //是否有要写入寄存器
@@ -118,7 +140,9 @@ id id0(
   .aluOp_o(id_aluOp_o),
   // 送往写回段的数据和控制信号
   .wRegAddr_o(id_wRegAddr_o),
-  .wReg_o(id_wReg_o)
+  .wReg_o(id_wReg_o),
+  //控制流水线暂停
+  .stall_request(stall_request_from_id)
 );
 
 regfile regfile0(
@@ -143,13 +167,15 @@ regfile regfile0(
 );
 
 id_ex id_ex0(
+  // input
   .clk(clk),
   .rst(rst),
-  // input
+  .stall(stallCtrl),
   // EX
   .aluOp_i(id_aluOp_o),
   .operand1_i(id_operand1_o),
   .operand2_i(id_operand2_o),
+  // MEM
   // WB
   .wReg_i(id_wReg_o),
   .wRegAddr_i(id_wRegAddr_o),
@@ -171,12 +197,18 @@ ex ex0(
   .aluOp_i(ex_aluOp_i),
   .operand1_i(ex_operand1_i),
   .operand2_i(ex_operand2_i),
-  // MEM (blank)
+  // MEM
   // WB
   .wReg_i(ex_wReg_i),
   .wRegAddr_i(ex_wRegAddr_i),
 
   // output
+  //
+  .aluOp_o(ex_aluOp_o),
+  // MEM
+  .memAddr_o(ex_memAddr_o),
+  .rMem_o(ex_rMem_o),
+  .wMem_o(ex_wMem_o),
   // MEM-WB
   .wData_o(ex_wData_o),
   .wReg_o(ex_wReg_o),
@@ -188,6 +220,11 @@ ex_mem ex_mem0(
   // input
   .clk(clk),
   .rst(rst),
+  .stall(stallCtrl),
+  // MEM
+  .memAddr_i(ex_memAddr_o),
+  .rMem_i(ex_rMem_o),
+  .wMem_i(ex_wMem_o),
   // MEM-WB
   .wData_i(ex_wData_o),
   // WB
@@ -195,6 +232,10 @@ ex_mem ex_mem0(
   .wRegAddr_i(ex_wRegAddr_o),
 
   // output
+  // MEM
+  .memAddr_o(mem_memAddr_i),
+  .rMem_o(mem_rMem_i),
+  .wMem_o(mem_wMem_i),
   // MEM-WB
   .wData_o(mem_wData_i),
   // WB
@@ -205,6 +246,10 @@ ex_mem ex_mem0(
 mem mem0(
   // input
   // WB-MEM
+  // MEM
+  .memAddr_i(mem_memAddr_i),
+  .rMem_i(mem_rMem_i),
+  .wMem_i(mem_wMem_i),
   .wData_i(mem_wData_i),
   // WB
   .wReg_i(mem_wReg_i),
@@ -214,13 +259,16 @@ mem mem0(
   // WB
   .wData_o(mem_wData_o),
   .wReg_o(mem_wReg_o),
-  .wRegAddr_o(mem_wRegAddr_o)
+  .wRegAddr_o(mem_wRegAddr_o),
+  //控制流水线暂停
+  .stall_request(stall_request_from_mem)
 );
 
 mem_wb mem_wb0(
   // input
   .clk(clk),
   .rst(rst),
+  .stall(stallCtrl),
   // WB
   .wData_i(mem_wData_o),
   .wReg_i(mem_wReg_o),

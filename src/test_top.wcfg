@@ -10,7 +10,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="26" />
+   <WVObjectSize size="37" />
    <wvobject fp_name="/test_top/clk" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -22,6 +22,38 @@
    <wvobject fp_name="/test_top/uut/cpu0/pc_reg0/pc" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">pc[15:0]</obj_property>
       <obj_property name="ObjectShortName">pc[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/ctrl0/stall_request_from_id" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">stall_request_from_id</obj_property>
+      <obj_property name="ObjectShortName">stall_request_from_id</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/aluOp_ex_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">aluOp_ex_i[3:0]</obj_property>
+      <obj_property name="ObjectShortName">aluOp_ex_i[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/ctrl0/stall_request_from_mem" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">stall_request_from_mem</obj_property>
+      <obj_property name="ObjectShortName">stall_request_from_mem</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/stall_request" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">stall_request</obj_property>
+      <obj_property name="ObjectShortName">stall_request</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/stall_request_from_reg1" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">stall_request_from_reg1</obj_property>
+      <obj_property name="ObjectShortName">stall_request_from_reg1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/stall_request_from_reg2" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">stall_request_from_reg2</obj_property>
+      <obj_property name="ObjectShortName">stall_request_from_reg2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/pc_reg0/stall" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">stall[5:0]</obj_property>
+      <obj_property name="ObjectShortName">stall[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/ctrl0/stallCtrl" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">stallCtrl[5:0]</obj_property>
+      <obj_property name="ObjectShortName">stallCtrl[5:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/test_top/uut/cpu0/pc_reg0/jump_i" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">jump_i</obj_property>
@@ -54,6 +86,10 @@
    <wvobject fp_name="/test_top/uut/cpu0/id0/inst_i" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">inst_i[15:0]</obj_property>
       <obj_property name="ObjectShortName">inst_i[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/id0/instAddr_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">instAddr_i[15:0]</obj_property>
+      <obj_property name="ObjectShortName">instAddr_i[15:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/test_top/uut/cpu0/id0/reg1Enable_o" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">reg1Enable_o</obj_property>
@@ -114,5 +150,13 @@
    <wvobject fp_name="/test_top/uut/cpu0/regfile0/rData1_o" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">rData1_o[15:0]</obj_property>
       <obj_property name="ObjectShortName">rData1_o[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/mem0/rMem_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">rMem_i</obj_property>
+      <obj_property name="ObjectShortName">rMem_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/cpu0/mem0/wMem_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">wMem_i</obj_property>
+      <obj_property name="ObjectShortName">wMem_i</obj_property>
    </wvobject>
 </wave_config>
