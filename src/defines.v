@@ -11,7 +11,7 @@
 `define NoStop              1'b0
 `define Enable              1'b1
 `define Disable             1'b0
-`define PcUnit              2'b10
+`define PcUnit              2'b01
 
 
 `define InstAddrBus         15:0                    // 指令ROM地址线宽度
@@ -110,3 +110,6 @@
 `define InstMemNumLog2      8
 `define InstHi              15:8                   //指令低位部分
 `define InstLo              7:0                    //指令高位部分
+
+// 串口
+`define UartRegBus          7:0

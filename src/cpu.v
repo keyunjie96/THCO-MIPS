@@ -6,10 +6,18 @@ module cpu (
 
   input wire[`RegBus]   instData_i,
   output wire[`RegBus]  instAddr_o,
-  output wire           instEnable_o
+  output wire           instEnable_o,
+
+  // 给mem_control
+  input reg[`MemBus]        memDataRead_i,      // 给MEM的数据
+  output wire[`MemAddrBus]  memAddress_o,       // MEM段数据地址
+  output wire[`MemBus]      memDataWrite_o,     // MEM段数据
+  output wire               memWriteEnable_o,   // MEM写使能
+  output wire               memReadEnable_o,    // MEM读使能
+  output wire               pauseRequest_o     // 暂停流水线信号
 );
 
-// ctrl模块
+// // ctrl模块
 wire stall_request_from_id;
 wire stall_request_from_mem;
 wire[`StallRegBus]  stallCtrl;
@@ -244,6 +252,14 @@ ex_mem ex_mem0(
 );
 
 mem mem0(
+  // 引到cpu上
+  .wData_mem_i(memDataRead_i),
+  .memAddr_o(memAddress_o),
+  .wData_mem_o(memDataWrite_o),
+  .rMem_o(memReadEnable_o),
+  .wMem_o(memWriteEnable_o),
+  .stall_request(pauseRequest_o),
+
   // input
   // WB-MEM
   // MEM

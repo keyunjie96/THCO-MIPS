@@ -42,7 +42,7 @@ always @ (posedge clk) begin
 end
 
 // 读端口1
-always @ ( * ) begin
+always @ ( rst or rAddr1_i or wAddr_i or wEnable_i or rEnable1_i ) begin
 	if (rst == `RstEnable) begin
 		rData1_o <= `ZeroWord;
 	end
@@ -66,7 +66,7 @@ always @ ( * ) begin
 end
 
 // 读端口2
-always @ ( * ) begin
+always @ (  rst or rAddr2_i or wAddr_i or wEnable_i or rEnable2_i  ) begin
 	if (rst == `RstEnable) begin
 		rData2_o <= `ZeroWord;
 	end
