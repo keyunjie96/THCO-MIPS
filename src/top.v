@@ -13,8 +13,8 @@ module top (
   output wire ram1en,
   output wire rdn,
   output wire wrn,
-  inout reg ram1data 
-  // output reg 
+  inout reg ram1data
+  // output reg
 );
 
 // 连接cpu和mem_control
@@ -29,6 +29,22 @@ wire[`MemBus]      memDataWrite;     // MEM段数据
 wire               memWriteEnable;   // MEM写使能
 wire               memReadEnable;    // MEM读使能
 wire               pauseRequest;     // 暂停流水线信号
+
+// 连接mem_control和mmu
+wire[`MemBus] memCtrl_dataRead;
+wire[`MemAddrBus] memCtrl_address;
+wire[`MemBus] memCtrl_dataWrite;
+wire memCtrl_readWrite;
+wire memCtrl_enable;
+
+// 连接mmu和RAM
+wire ram_enable_in;
+wire ram_readWrite_in;
+wire[`MemAddrBus] ram_address_in;
+wire[`MemBus] ram_data_in;
+wire[`MemBus] ram_data_out;
+
+
 // always @(*) begin
 //   a <= inst_addr;
 // end
@@ -56,14 +72,43 @@ mem_control mem_control0(
   //与同层cpu接口
   .instAddress_i(inst_addr),
   .instData_o(inst),
-  
+
   .memDataRead_o(memDataRead),
   .memAddress_i(memAddress),
   .memDataWrite_i(memDataWrite),
   .memWriteEnable_i(memWriteEnable),
   .memReadEnable_i(memReadEnable),
-  .pauseRequest_i(pauseRequest)
+  .pauseRequest_i(pauseRequest),
 
+  // 与mmu
+  .memDataRead_i(memCtrl_dataRead),
+  .memAddress_o(memCtrl_address),
+  .memDataWrite_o(memCtrl_dataWrite),
+  .memReadWrite_o(memCtrl_readWrite),
+  .memEnable_o(memCtrl_enable)
+);
+
+mmu mmu0(
+    .memAddress_i(memCtrl_address),
+    .memDataWrite_i(memCtrl_dataWrite),
+    .memReadWrite_i(memCtrl_readWrite),
+    .memEnable_i(memCtrl_enable),
+    .memDataRead_o(memCtrl_dataRead),
+    .ram_enable_o(ram_enable_in),
+    .ram_readWrite_o(ram_readWrite_in),
+    .ram_address_o(ram_address_in),
+    .ram_dataWrite_o(ram_data_in),
+    .ram_dataRead_i(ram_data_out)
+);
+
+ram_control ram_control0(
+    .clk(clk),
+    .rst(rst),
+    .enable_in(ram_enable_in),
+    .readWrite_in(ram_readWrite_in),
+    .address_in(ram_address_in),
+    .data_in(ram_data_in),
+    .data_out(ram_data_out)
 );
 
 cpu cpu0(

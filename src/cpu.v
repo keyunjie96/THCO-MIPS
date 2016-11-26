@@ -187,7 +187,7 @@ id_ex id_ex0(
   // WB
   .wReg_i(id_wReg_o),
   .wRegAddr_i(id_wRegAddr_o),
-  
+
   // output
   // EX
   .aluOp_o(ex_aluOp_i),

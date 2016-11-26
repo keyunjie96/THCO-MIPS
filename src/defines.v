@@ -103,8 +103,6 @@
 `define RegZero             4'b0000                 // 0号寄存器地址
 
 //内存参数
-`define MemAddrBus          15:0
-`define MemBus              15:0
 // `define MemStatus           1:0
 // `define MemDisable          2'b00
 // `define MemRead             2'b01
