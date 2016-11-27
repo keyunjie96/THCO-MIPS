@@ -56,6 +56,10 @@ src/test.c
 *.ppr
 *.jou
 *.zip
+*.cdc
+*.blc
+*.ucf
+*.exe
 
 
 
@@ -85,3 +89,4 @@ _xmsgs/
 .vscode/*
 *isim*
 fuse*
+planAhead*

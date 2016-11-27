@@ -34,7 +34,7 @@ reg[1:0] preserve_state;
 reg[`InstBus] dataBuffer;   // 缓存的数据
 
 // 状态机状态转移
-always @ (posedge clk or negedge rst) begin
+always @ (posedge clk) begin
     if (rst == `RstDisable) begin
         state <= `S_IDLE;
     end else begin

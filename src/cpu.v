@@ -9,7 +9,7 @@ module cpu (
   output wire           instEnable_o,
 
   // 给mem_control
-  input reg[`MemBus]        memDataRead_i,      // 给MEM的数据
+  input wire[`MemBus]        memDataRead_i,      // 给MEM的数据
   output wire[`MemAddrBus]  memAddress_o,       // MEM段数据地址
   output wire[`MemBus]      memDataWrite_o,     // MEM段数据
   output wire               memWriteEnable_o,   // MEM写使能
@@ -17,7 +17,7 @@ module cpu (
   output wire               pauseRequest_o     // 暂停流水线信号
 );
 
-// // ctrl模块
+// ctrl模块
 wire stall_request_from_id;
 wire stall_request_from_mem;
 wire[`StallRegBus]  stallCtrl;
@@ -80,6 +80,8 @@ wire[`RegAddrBus] mem_wRegAddr_o;
 wire reg_wEnable_i;
 wire[`RegAddrBus] reg_wAddr_i;
 wire[`RegBus] reg_wData_i;
+
+assign pauseRequest_o = stall_request_from_mem;
 
 // pc
 pc_reg pc_reg0(
@@ -258,7 +260,6 @@ mem mem0(
   .wData_mem_o(memDataWrite_o),
   .rMem_o(memReadEnable_o),
   .wMem_o(memWriteEnable_o),
-  .stall_request(pauseRequest_o),
 
   // input
   // WB-MEM

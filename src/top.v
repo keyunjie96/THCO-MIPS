@@ -13,13 +13,16 @@ module top (
   output wire ram1en,
   output wire rdn,
   output wire wrn,
-  inout reg ram1data
-  // output reg
+  inout wire[7:0] ram1data,
+  // ram2
+  output wire ram2oe,
+  output wire ram2we,
+  output wire ram2en,
+  output wire[`MemAddrBus] ram2Addr,
+  output wire[7:0] ram2Data
 );
 
 // 连接cpu和mem_control
-
-
 wire[`InstAddrBus] inst_addr;
 wire[`InstBus] inst;
 wire rom_ce;
@@ -44,6 +47,14 @@ wire[`MemAddrBus] ram_address_in;
 wire[`MemBus] ram_data_in;
 wire[`MemBus] ram_data_out;
 
+// 连接mmu和uart
+wire[`MemBus] serial_dataWrite_o;
+wire serial_readWrite_o;
+wire serial_enable_o;
+wire[`MemBus] serial_dataRead_i;
+wire serial_sendComplete_i;
+wire serial_receiveComplete_i;
+
 
 // always @(*) begin
 //   a <= inst_addr;
@@ -53,16 +64,22 @@ uart uart0(
   //与上层接口
   .clk(clk),
   .rst(rst),
+  .data_ready(data_ready),
   .tbre(tbre),
   .tsre(tsre),
   .ram1oe(ram1oe),
   .ram1we(ram1we),
   .ram1en(ram1en),
   .rdn(rdn),
-  .wdn(wdn),
+  .wrn(wrn),
   .ram1data(ram1data),
   //与同层mem_control接口
-
+  .send_data(serial_dataWrite_o),
+  .send_data_complete(serial_sendComplete_i),
+  .receive_data_complete(serial_receiveComplete_i),
+  .en1(serial_readWrite_o),
+  .en2(serial_enable_o),
+  .receive_data(serial_dataRead_i)
 );
 
 mem_control mem_control0(
@@ -98,7 +115,14 @@ mmu mmu0(
     .ram_readWrite_o(ram_readWrite_in),
     .ram_address_o(ram_address_in),
     .ram_dataWrite_o(ram_data_in),
-    .ram_dataRead_i(ram_data_out)
+    .ram_dataRead_i(ram_data_out),
+    // uart
+    .serial_dataWrite_o(serial_dataWrite_o),
+    .serial_readWrite_o(serial_readWrite_o),
+    .serial_enable_o(serial_enable_o),
+    .serial_dataRead_i(serial_dataRead_i),
+    .serial_sendComplete_i(serial_sendComplete_i),
+    .serial_receiveComplete_i(serial_receiveComplete_i)
 );
 
 ram_control ram_control0(
@@ -108,7 +132,13 @@ ram_control ram_control0(
     .readWrite_in(ram_readWrite_in),
     .address_in(ram_address_in),
     .data_in(ram_data_in),
-    .data_out(ram_data_out)
+    .data_out(ram_data_out),
+    // top
+    .ram_oe_out(ram2oe),
+    .ram_we_out(ram2we),
+    .ram_en_out(ram2en),
+    .ram_address_out(ram2Addr),
+    .ram_data_inout(ram2Data)
 );
 
 cpu cpu0(

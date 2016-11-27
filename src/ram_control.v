@@ -12,8 +12,8 @@ module ram_control (
   output  reg                   ram_we_out,
   output  reg                   ram_en_out,
   output  reg[`MemAddrBus]      ram_address_out,
-  inout   wire[`MemBus]         ram_data_inout,
-  output  reg                   ram_rdn_out
+  inout   wire[`MemBus]         ram_data_inout
+  // output  reg                   ram_rdn_out
 );
 
 assign ram_data_inout = readWrite_in == 0 ? `HighZWord : data_in;
@@ -22,7 +22,7 @@ always @ ( clk ) begin
   if (enable_in == `ChipDisable) begin
     ram_en_out = 1;
   end else begin
-    ram_rdn_out = 1;
+    // ram_rdn_out = 1;
     if (clk == 1) begin
       case (readWrite_in)
         0: begin    // read

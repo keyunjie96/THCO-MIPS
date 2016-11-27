@@ -7,6 +7,7 @@ bin_file = sys.argv[2] if len(sys.argv) > 2 else 'test_program.bin'
 template_file = sys.argv[3] if len(sys.argv) > 3 else 'inst_rom.template.v'
 output_file = sys.argv[4] if len(sys.argv) > 4 else 'inst_rom.v'
 
+# <<<<<<< HEAD
 os.system(' '.join(['Assembleler.exe', ass_file, bin_file]))    # 汇编转为二进制文件
 bin_file_data = []
 
@@ -34,3 +35,20 @@ template[insert_point:insert_point] = inst_rom_text
 
 with open(output_file, 'w') as f:
     f.write(''.join(template))
+# =======
+# os.system(' '.join(['Assembleler.exe', ass_file, bin_file])) #汇编转为二进制文件
+# bin_file_data = open(bin_file, 'rb').read() #读取二进制文件
+# bin_file_data = ['0'*(2-len(hex(ord(x))[2:]))+hex(ord(x))[2:] for x in bin_file_data] #转为十六进制
+# bin_file_data = [''.join(bin_file_data[i*2:i*2+2]) for i in range(0, len(bin_file_data)/2)] #合并相邻两个字为指令
+# ass_file_data = open(ass_file, 'r').readlines() #读取汇编源文件
+# print 'Instruction:'
+# bin_index = 0
+# for index in range(0, len(ass_file_data)):
+#     if ass_file_data[index][0] not in [';',' ',':'] and ass_file_data[index][-1] not in [':']:
+#         print '%s : %s' % (ass_file_data[index][:-1], bin_file_data[bin_index]) #打印显示
+#         bin_index += 1
+
+# with open(inst_file, 'w') as f:
+#     for hex_data in bin_file_data:
+#         f.write(''.join([hex_data[0:2],'\n',hex_data[2:4],'\n']))
+# >>>>>>> data_conflict
