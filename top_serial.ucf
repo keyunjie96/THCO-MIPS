@@ -1,0 +1,22 @@
+
+# PlanAhead Generated physical constraints 
+
+NET "clk" LOC = B9;
+NET "RxD" LOC = V5;
+NET "TxD" LOC = K3;
+NET "GPin[7]" LOC = R4;
+NET "GPin[6]" LOC = U1;
+NET "GPin[5]" LOC = V2;
+NET "GPin[4]" LOC = V3;
+NET "GPin[3]" LOC = V4;
+NET "GPin[2]" LOC = U8;
+NET "GPin[1]" LOC = R7;
+NET "GPin[0]" LOC = T7;
+NET "GPout[7]" LOC = F11;
+NET "GPout[6]" LOC = E11;
+NET "GPout[5]" LOC = D11;
+NET "GPout[4]" LOC = C11;
+NET "GPout[3]" LOC = B11;
+NET "GPout[2]" LOC = A11;
+NET "GPout[1]" LOC = E10;
+NET "GPout[0]" LOC = D10;
