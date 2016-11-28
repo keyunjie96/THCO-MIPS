@@ -5,7 +5,7 @@ module mem (
   // MEM
   input wire[`MemAddrBus]   memAddr_i,       // 内存地址
   input wire                rMem_i,          // 是否读取内存
-  input wire                wMem_i,          // 是否写入内存   
+  input wire                wMem_i,          // 是否写入内存
   // MEM-WB
   input wire[`RegBus]       wData_i,
   // WB
@@ -18,7 +18,7 @@ module mem (
   output reg[`MemBus]       wData_mem_o,
   output reg                rMem_o,
   output reg                wMem_o,
-  
+
   // WB
   output reg[`RegBus]       wData_o,
   output reg                wReg_o,
@@ -31,11 +31,12 @@ module mem (
 always @ ( * ) begin
   memAddr_o <= memAddr_i;
   if (rMem_i == `ReadEnable) begin
-    wData_o <= wData_mem_o;
+    wData_o <= wData_mem_i;
   end else if (wMem_i == `WriteEnable) begin
     wData_mem_o <= wData_i;
+  end else begin
+    wData_o <= wData_i;
   end
-  wData_o <= wData_i;
 end
 
 // 传递控制信号和数据

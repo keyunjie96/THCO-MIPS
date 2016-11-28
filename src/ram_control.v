@@ -1,8 +1,6 @@
 `include "defines.v"
 
 module ram_control (
-  input   wire                  clk,
-  input   wire                  rst,
   input   wire                  enable_in,        // 使能信号
   input   wire                  readWrite_in,     // 0表示读，1表示��
   input   wire[`MemAddrBus]     address_in,
@@ -16,35 +14,39 @@ module ram_control (
   // output  reg                   ram_rdn_out
 );
 
+// reg[15:0] inst_mem[0:65535];
+
+// initial $readmemh("src/asm/inst_rom.data", inst_mem);
+
 assign ram_data_inout = readWrite_in == 0 ? `HighZWord : data_in;
 
-always @ ( clk ) begin
+always @ ( * ) begin
   if (enable_in == `ChipDisable) begin
     ram_en_out = 1;
   end else begin
-    // ram_rdn_out = 1;
-    if (clk == 1) begin
-      case (readWrite_in)
-        0: begin    // read
+     ram_en_out = 1;
+     case (readWrite_in)
+        `MemRead: begin    // read
           ram_en_out = 0;
           ram_we_out = 1;
           ram_oe_out = 0;
+        //   data_out = inst_mem[address_in];
           ram_address_out = address_in;
+          data_out = ram_data_inout;
         end
-        1: begin    // write
-          ram_en_out = 0;
-          ram_we_out = 0;
+        `MemWrite: begin    // write
+        //   inst_mem[address_in] = data_in;
+          ram_oe_out = 0;
+          ram_we_out = 1;
+          ram_address_out = address_in;
           ram_oe_out = 1;
-          ram_address_out = address_in;
+          ram_we_out = 0;
+          ram_en_out = 0;
         end
-        default: begin end
-      endcase
-    end else begin
-      case (readWrite_in)
-        0: data_out = ram_data_inout;
-        default: begin end
-      endcase
-    end
+        default: begin
+          ram_en_out = 1;
+        end
+     endcase
   end
 end
 

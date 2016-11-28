@@ -1,10 +1,6 @@
 `include "defines.v"
 
 module mem_control (
-    // 时钟
-    input wire clk,
-    input wire rst,
-
     // 与上层的接口
     input wire[`InstAddrBus]    instAddress_i,      // IF段取址地址
     output reg[`InstBus]        instData_o,         // 给IF/ID的指令
@@ -25,73 +21,26 @@ module mem_control (
     output reg                  memEnable_o         // 仿存使能信号
 );
 
-`define S_IDLE 2'b00
-`define S_INST 2'b01
-`define S_DATA 2'b10
-
-reg[1:0] state = `S_IDLE;   // 状态
-reg[1:0] preserve_state;
-reg[`InstBus] dataBuffer;   // 缓存的数据
-
-// 状态机状态转移
-always @ (posedge clk) begin
-    if (rst == `RstDisable) begin
-        state <= `S_IDLE;
+always @ ( * ) begin
+    if (pauseRequest_i == `Disable) begin
+        memAddress_o = instAddress_i;
+        memReadWrite_o = `MemRead;
+        memEnable_o = `Enable;
+        instData_o = memDataRead_i;
     end else begin
-        case (state)
-            `S_IDLE: begin
-                memEnable_o <= `Disable;
-                preserve_state <= `S_INST;
-                state <= `S_INST;
-            end
-            `S_INST: begin
-                // 下层
-                memEnable_o <= `Enable;
-                memAddress_o <= instAddress_i;
-                memReadWrite_o <= `MemRead;
-                preserve_state <= state;
-                if (pauseRequest_i == `Disable)
-                    state <= `S_INST;
-                else
-                    state <= `S_DATA;
-            end
-            `S_DATA: begin
-                // 下层
-                memEnable_o <= `Enable;
-                memAddress_o <= memAddress_i;
-                if (memReadEnable_i == 1 && memWriteEnable_i == 0) begin  // 读
-                    memReadWrite_o <= `MemRead;
-                end else if (memReadEnable_i == 0 && memWriteEnable_i == 1) begin  // 写
-                    memReadWrite_o <= `MemWrite;
-                    memDataWrite_o <= memDataWrite_i;
-                end else begin
-                    memEnable_o <= `Disable;
-                end
-                preserve_state <= state;
-                state <= `S_INST;
-            end
-            default: state <= `S_IDLE;
-        endcase
+        memAddress_o = memAddress_i;
+        if (memReadEnable_i == `Enable && memWriteEnable_i == `Disable) begin
+            memReadWrite_o = `MemRead;
+            memEnable_o = `Enable;
+        end else if (memReadEnable_i == `Disable && memWriteEnable_i == `Enable) begin
+            memReadWrite_o = `MemWrite;
+            memDataWrite_o = memDataWrite_i;
+            memEnable_o = `Enable;
+        end else begin
+            memEnable_o = `Disable;
+        end
+        memDataRead_o = memDataRead_i;
     end
-end
-
-// 处理向上层的输出
-always @ ( memDataRead_i ) begin
-    case (preserve_state)
-        `S_IDLE: begin
-            instData_o = `ZeroWord;     // TODO: 改成NOP应该更好
-            memDataRead_o = `ZeroWord;
-        end
-        `S_INST: begin
-            dataBuffer = memDataRead_i;
-            instData_o = memDataRead_i;
-        end
-        `S_DATA: begin
-            instData_o = dataBuffer;
-            memDataRead_o = memDataRead_i;
-        end
-        default: ;
-    endcase
 end
 
 endmodule // mem_control

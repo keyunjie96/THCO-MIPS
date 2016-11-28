@@ -2,6 +2,8 @@
 
 module top (
   input wire clk,
+  input wire clk_50,
+  output wire clk_,
   input wire rst,
 
   // serial
@@ -18,8 +20,9 @@ module top (
   output wire ram2oe,
   output wire ram2we,
   output wire ram2en,
-  output wire[`MemAddrBus] ram2Addr,
-  output wire[7:0] ram2Data
+  output wire[`MemAddrBus] ram2addr,
+  inout wire[`MemBus] ram2data,
+  output wire[15:0] led
 );
 
 // 连接cpu和mem_control
@@ -62,7 +65,7 @@ wire serial_receiveComplete_i;
 
 uart uart0(
   //与上层接口
-  .clk(clk),
+  .clk(clk_50),
   .rst(rst),
   .data_ready(data_ready),
   .tbre(tbre),
@@ -83,9 +86,6 @@ uart uart0(
 );
 
 mem_control mem_control0(
-  //与上层接口
-  .clk(clk),
-  .rst(rst),
   //与同层cpu接口
   .instAddress_i(inst_addr),
   .instData_o(inst),
@@ -126,8 +126,6 @@ mmu mmu0(
 );
 
 ram_control ram_control0(
-    .clk(clk),
-    .rst(rst),
     .enable_in(ram_enable_in),
     .readWrite_in(ram_readWrite_in),
     .address_in(ram_address_in),
@@ -137,8 +135,8 @@ ram_control ram_control0(
     .ram_oe_out(ram2oe),
     .ram_we_out(ram2we),
     .ram_en_out(ram2en),
-    .ram_address_out(ram2Addr),
-    .ram_data_inout(ram2Data)
+    .ram_address_out(ram2addr),
+    .ram_data_inout(ram2data)
 );
 
 cpu cpu0(
@@ -155,6 +153,9 @@ cpu cpu0(
   .memReadEnable_o(memReadEnable),
   .pauseRequest_o(pauseRequest)
 );
+
+assign led = inst_addr;
+assign clk_ = clk_50;
 
 // inst_rom inst_rom0(
 //   .ce(rom_ce),

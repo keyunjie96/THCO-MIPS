@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    22:06:24 11/03/2016 
--- Design Name: 
--- Module Name:    uart - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Create Date:    22:06:24 11/03/2016
+-- Design Name:
+-- Module Name:    uart - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --
--- Revision: 
+-- Dependencies:
+--
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -30,8 +30,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity uart is
-    Port ( clk : in  STD_LOGIC; 
-           rst : in  STD_LOGIC; 
+    Port ( clk : in  STD_LOGIC;
+           rst : in  STD_LOGIC;
            send_data : in  STD_LOGIC_VECTOR (15 downto 0); --*
            data_ready : in  STD_LOGIC;
            send_data_complete : out STD_LOGIC; --*1完成
@@ -53,7 +53,7 @@ end uart;
 
 architecture Behavioral of uart is
 ------------------信号声明------------------------
-type big_state_machine is (read_uart, write_uart); 
+type big_state_machine is (read_uart, write_uart);
 type read_state_machine is (r0, r1, r2, r3, r4, r5, r6);
 type write_state_machine is (w0, w1, w2, w3, w4, w5, w6, w7, w8, w9);
 signal big_state : big_state_machine;
@@ -107,7 +107,7 @@ begin
                     read_state <= r4;
                     -- state_show(4 downto 0) <= "00010";
                     -- receive_data_complete <= '1';
-                when r4 => 
+                when r4 =>
                     rdn <= '1';
                     ram1data <= "ZZZZZZZZ";
                     read_state <= r5;
@@ -123,7 +123,7 @@ begin
                     read_state <= r1;
                     receive_data_complete <= '1';
             end case;
-        elsif big_state = write_uart then 
+        elsif big_state = write_uart then
             case write_state is
                 when w0 =>
                     wrn <= '1';
@@ -144,7 +144,7 @@ begin
                         -- state_show(4 downto 0) <= "00010";
                     end if;
                 when w4 =>
-                    if tsre = '1' then 
+                    if tsre = '1' then
                         write_state <= w5;
                         -- state_show(4 downto 0) <= "00001";
                         -- send_data_complete <= '1';
@@ -161,15 +161,13 @@ begin
                         write_state <= w8;
                     end if;
                 when w8 =>
-                    if tsre = '1' then 
+                    if tsre = '1' then
                         write_state <= w9;
                         send_data_complete <= '1';
                     end if;
-                when w9 =>
-                    send_data_complete <= '0';
+                when w9 => null;
             end case;
         end if;
     end if;
 end process;
 end Behavioral;
-
