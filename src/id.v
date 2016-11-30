@@ -157,7 +157,7 @@ always @ ( * ) begin
       // pc
       if (in_delay_slot_i == `Disable) begin
         jump_o <= `Enable;
-        jump_target_addr_o <= instAddr_i + sgnImm11;
+        jump_target_addr_o <= instAddr_i + sgnImm11 + `PcUnit;
       end
     end
     `OP_BEQZ: begin
@@ -175,9 +175,9 @@ always @ ( * ) begin
       wReg_o <= `Disable;
       wRegAddr_o <= `ZeroWord;
       // pc
-      if ((reg1Data_i == `ZeroWord) && (in_delay_slot_i == `Disable)) begin
+      if ((reg1Data == `ZeroWord) && (in_delay_slot_i == `Disable)) begin
         jump_o <= `Enable;
-        jump_target_addr_o <= instAddr_i + sgnImm8;
+        jump_target_addr_o <= instAddr_i + sgnImm8 + `PcUnit;
       end
     end
     `OP_BNEZ: begin
@@ -195,9 +195,9 @@ always @ ( * ) begin
       wReg_o <= `Disable;
       wRegAddr_o <= `ZeroWord;
       // pc
-      if ((reg1Data_i != `ZeroWord) && (in_delay_slot_i == `Disable)) begin
+      if ((reg1Data != `ZeroWord) && (in_delay_slot_i == `Disable)) begin
         jump_o <= `Enable;
-        jump_target_addr_o <= instAddr_i + sgnImm8;
+        jump_target_addr_o <= instAddr_i + sgnImm8 + `PcUnit;
       end
     end
     `OP_SLL_SRA: begin
@@ -277,9 +277,9 @@ always @ ( * ) begin
           wReg_o <= `Disable;
           wRegAddr_o <= `ZeroWord;
           // pc
-          if ((reg1Data_i == `ZeroWord) && (in_delay_slot_i == `Disable)) begin
+          if ((reg1Data == `ZeroWord) && (in_delay_slot_i == `Disable)) begin
             jump_o <= `Enable;
-            jump_target_addr_o <= instAddr_i + sgnImm8;
+            jump_target_addr_o <= instAddr_i + sgnImm8 + `PcUnit;
           end
         end
         `FUNCT_MTSP: begin
@@ -500,6 +500,21 @@ always @ ( * ) begin
           wReg_o <= `Enable;
           wRegAddr_o <= `REG_T;
         end
+        `FUNCT_CMP: begin
+          // reg
+          reg1Enable_o <= `Enable;
+          reg2Enable_o <= `Enable;
+          reg1Addr_o <= rx;
+          reg2Addr_o <= ry;
+          // EX
+          operand1_o <= reg1Data;
+          operand2_o <= reg2Data;
+          aluOp_o <= `ALU_CMP;
+          // MEM (blank)
+          // WB
+          wReg_o <= `Enable;
+          wRegAddr_o <= `REG_T;
+        end
         default: begin
         end
       endcase
@@ -512,8 +527,8 @@ always @ ( * ) begin
           reg2Addr_o <= `ZeroWord;
           // EX
           operand1_o <= instAddr_i;
-          operand2_o <= `ZeroWord;
-          aluOp_o <= `ALU_OR;
+          operand2_o <= `PcUnit;
+          aluOp_o <= `ALU_ADD;
           // MEM (blank)
           // WB
           wReg_o <= `Enable;
@@ -547,7 +562,7 @@ always @ ( * ) begin
           reg2Addr_o <= `ZeroWord;
           // EX
           operand1_o <= instAddr_i;
-          operand2_o <= `PcUnit;
+          operand2_o <= `PcUnit + `PcUnit;
           aluOp_o <= `ALU_ADD;
           // MEM (blank)
           // WB

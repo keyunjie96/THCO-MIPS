@@ -3,6 +3,7 @@
 
 NET "clk" LOC = U9;
 NET "clk_50" LOC = B9;
+NET "clk_choose" LOC = J6;
 NET "rst" LOC = U10;
 NET "data_ready" LOC = A16;
 NET "tbre" LOC = D14;

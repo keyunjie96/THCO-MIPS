@@ -2,6 +2,7 @@
 
 module top (
   input wire clk,
+  input wire clk_choose,
   input wire clk_50,
   output wire clk_,
   input wire rst,
@@ -51,17 +52,34 @@ wire[`MemBus] ram_data_in;
 wire[`MemBus] ram_data_out;
 
 // 连接mmu和uart
-wire[`MemBus] serial_dataWrite_o;
+wire[`HalfWordBus] serial_dataWrite_o;
+wire serial_fetch_data_o;
 wire serial_readWrite_o;
 wire serial_enable_o;
-wire[`MemBus] serial_dataRead_i;
+wire[`HalfWordBus] serial_dataRead_i;
 wire serial_sendComplete_i;
 wire serial_receiveComplete_i;
 
+// 分频后时钟
+wire clock;
+wire clk_fast;
+wire clk_slow;
+wire[1:0] state;
+
+// assign clk_choose = `Disable;
+assign clock = clk_choose == `Enable ? clk_50 : clk;
 
 // always @(*) begin
 //   a <= inst_addr;
 // end
+
+clock_divider clock_divider0(
+    .clk(clock),
+    .rst(rst),
+    .clk_fast(clk_fast),
+    .clk_slow(clk_slow),
+    .state(state)
+);
 
 uart uart0(
   //与上层接口
@@ -82,6 +100,7 @@ uart uart0(
   .receive_data_complete(serial_receiveComplete_i),
   .en1(serial_readWrite_o),
   .en2(serial_enable_o),
+  .en3(serial_fetch_data_o),
   .receive_data(serial_dataRead_i)
 );
 
@@ -106,6 +125,7 @@ mem_control mem_control0(
 );
 
 mmu mmu0(
+    // .clk(clk_50),
     .memAddress_i(memCtrl_address),
     .memDataWrite_i(memCtrl_dataWrite),
     .memReadWrite_i(memCtrl_readWrite),
@@ -118,6 +138,7 @@ mmu mmu0(
     .ram_dataRead_i(ram_data_out),
     // uart
     .serial_dataWrite_o(serial_dataWrite_o),
+    .serial_fetch_data_o(serial_fetch_data_o),
     .serial_readWrite_o(serial_readWrite_o),
     .serial_enable_o(serial_enable_o),
     .serial_dataRead_i(serial_dataRead_i),
@@ -126,11 +147,14 @@ mmu mmu0(
 );
 
 ram_control ram_control0(
+    .clk(clk_fast),
+    .rst(rst),
     .enable_in(ram_enable_in),
     .readWrite_in(ram_readWrite_in),
     .address_in(ram_address_in),
     .data_in(ram_data_in),
     .data_out(ram_data_out),
+    .state(state),
     // top
     .ram_oe_out(ram2oe),
     .ram_we_out(ram2we),
@@ -140,7 +164,7 @@ ram_control ram_control0(
 );
 
 cpu cpu0(
-  .clk(clk),
+  .clk(clk_slow),
   .rst(rst),
   //与同层mem_control接口
   .instData_i(inst),
@@ -154,7 +178,14 @@ cpu cpu0(
   .pauseRequest_o(pauseRequest)
 );
 
-assign led = inst_addr;
+assign led[15] = ram_readWrite_in;
+assign led[14] = ram2en;
+assign led[13] = ram2we;
+assign led[12] = ram2oe;
+assign led[11] = 0;
+assign led[10] = serial_receiveComplete_i;
+assign led[9] = serial_sendComplete_i;
+assign led[8:0] = inst_addr;
 assign clk_ = clk_50;
 
 // inst_rom inst_rom0(

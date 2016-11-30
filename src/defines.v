@@ -13,14 +13,18 @@
 `define Disable             1'b0
 `define PcUnit              2'b01
 
+`define ZHalfWord           8'bZZZZZZZZ
+`define HalfWordBus         7:0
 
-`define InstAddrBus         15:0                    // 指令ROM地址线宽��
+`define BadLand             16'hFFF0
+
+`define InstAddrBus         15:0                    // 指令ROM地址线宽度
 `define InstBus             15:0                    // 指令ROM数据线宽
-`define InstWordBus         7:0                     // 指令ROM数据单字线宽
+`define InstWordBus         15:0                     // 指令ROM数据单字线宽
 `define AluOpBus            3:0                     // ALU操作码宽度
 
-`define MemAddrBus          15:0                    // 主存地址线宽��
-`define MemBus              15:0                    // 主存数据线宽��
+`define MemAddrBus          15:0                    // 主存地址线宽
+`define MemBus              15:0                    // 主存数据线宽
 `define HighZWord           16'bZ
 `define MemRead             1'b0
 `define MemWrite            1'b1
@@ -34,7 +38,7 @@
 `define SerialIOAddr        16'hBF00
 `define SerialStatusAddr    16'hBF01
 
-// ALU操作��
+// ALU操作
 `define ALU_NOP             4'b0000                 // NOP
 `define ALU_ADD             4'b0001
 `define ALU_SUB             4'b0010
@@ -102,16 +106,9 @@
 `define RegNum              16                      // 寄存器数量
 `define RegZero             4'b0000                 // 0号寄存器地址
 
-//内存参数
-// `define MemStatus           1:0
-// `define MemDisable          2'b00
-// `define MemRead             2'b01
-// `
-
 // 暂停
 `define StallRegBus         5:0
 `define StallDisable        6'b000000
-
 
 // 指令存储器
 `define InstMemNum          128                     // 指令存储器ROM大小
@@ -121,3 +118,13 @@
 
 // 串口
 `define UartRegBus          7:0
+//串口状态机
+`define r0                  4'b0000
+`define r1                  4'b0001
+`define r2                  4'b0010
+`define r3                  4'b0011
+`define w0                  4'b1000
+`define w1                  4'b1001
+`define w2                  4'b1010
+`define w3                  4'b1011
+`define w4                  4'b1100

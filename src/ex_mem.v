@@ -8,7 +8,7 @@ module ex_mem (
   // MEM
   input wire[`MemAddrBus]    memAddr_i,       // 内存地址
   input wire                 rMem_i,          // 是否读取内存
-  input wire                 wMem_i,          // 是否写入内存 
+  input wire                 wMem_i,          // 是否写入内存
   // MEM-WB
   input wire[`RegBus]       wData_i,
   // WB
@@ -19,7 +19,7 @@ module ex_mem (
   // MEM
   output reg[`MemAddrBus]     memAddr_o,       // 内存地址
   output reg                  rMem_o,          // 是否读取内存
-  output reg                  wMem_o,          // 是否写入内存 
+  output reg                  wMem_o,          // 是否写入内存
   // MEM-WB
   output reg[`RegBus]       wData_o,
   // WB
@@ -30,7 +30,7 @@ module ex_mem (
 always @ (posedge clk) begin
   if ((rst == `RstEnable) || ((stall[3] == `Stop) & (stall[4] == `NoStop))) begin
     // MEM
-    memAddr_o <= `ZeroWord;
+    memAddr_o <= `BadLand;
     rMem_o <= `Disable;
     wMem_o <= `Disable;
     // MEM-WB

@@ -20,30 +20,33 @@ module mmu (
     output reg[`MemBus] serial_dataWrite_o,
     output reg serial_readWrite_o,
     output reg serial_enable_o,
+    output reg serial_fetch_data_o,
     input wire[`MemBus] serial_dataRead_i,
     input wire serial_sendComplete_i,
     input wire serial_receiveComplete_i
 );
 
 always @ ( * ) begin
+    // $display("%b", serial_dataWrite_o);
+    serial_enable_o = `Enable;
+    serial_readWrite_o = 0; //平常为读状态
+    serial_fetch_data_o = 0;
     if (memAddress_i == `SerialIOAddr) begin
         ram_enable_o = `Disable;
-        serial_enable_o = `Enable;
         serial_readWrite_o = memReadWrite_i;
         if (memReadWrite_i == `MemWrite) begin   // 写
             serial_dataWrite_o = memDataWrite_i;
         end else begin                          // 读
+            serial_fetch_data_o = 1;
             memDataRead_o = serial_dataRead_i;
         end
     end else if (memAddress_i == `SerialStatusAddr) begin
         ram_enable_o = `Disable;
-        serial_enable_o = `Enable;
         if (memReadWrite_i == `MemRead) begin  // 测试读写状态
             memDataRead_o = {14'b0, serial_receiveComplete_i, serial_sendComplete_i};
         end
     end else begin
         ram_enable_o = `Enable;
-        serial_enable_o = `Disable;
         ram_readWrite_o = memReadWrite_i;
         ram_address_o = memAddress_i;
         if (memReadWrite_i == `MemWrite) begin   // 写

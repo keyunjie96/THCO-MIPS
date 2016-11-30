@@ -1,0 +1,3 @@
+LI R0 0x5
+CMPI R0 0x3
+BTEQZ

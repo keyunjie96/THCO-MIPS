@@ -44,8 +44,7 @@ always @ ( * ) begin
   // mem_control
   rMem_o <= rMem_i;
   wMem_o <= wMem_i;
-
-  stall_request <= wMem_i; //需要写入时，停止流水线
+  stall_request <= wMem_i | rMem_i; //需要写入时，停止流水线
   wReg_o <= wReg_i;
   wRegAddr_o <= wRegAddr_i;
 end
