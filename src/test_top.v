@@ -40,13 +40,12 @@ module test_top;
 	initial begin
 		clk_choose = 1'b0;
 		clk = 1'b0;
-		forever #2 clk = ~clk;
+		forever #1 clk = ~clk;
 	end
 
 	initial begin
 		rst = `RstEnable;
-		#2 rst = `RstDisable;
-		#1000 $stop;
+		#1 rst = `RstDisable;
 	end
 
 endmodule

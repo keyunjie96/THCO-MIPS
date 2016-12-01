@@ -178,14 +178,14 @@ cpu cpu0(
   .pauseRequest_o(pauseRequest)
 );
 
-assign led[15] = ram_readWrite_in;
-assign led[14] = ram2en;
-assign led[13] = ram2we;
-assign led[12] = ram2oe;
-assign led[11] = 0;
-assign led[10] = serial_receiveComplete_i;
-assign led[9] = serial_sendComplete_i;
-assign led[8:0] = inst_addr;
+// assign led[15] = ram_readWrite_in;
+// assign led[14] = ram2en;
+// assign led[13] = ram2we;
+// assign led[12] = ram2oe;
+// assign led[11] = serial_receiveComplete_i;
+// assign led[10] = serial_sendComplete_i;
+// assign led[9:0] = inst_addr;
+assign led = inst;
 assign clk_ = clk_50;
 
 // inst_rom inst_rom0(

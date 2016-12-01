@@ -24,11 +24,11 @@ module pc_reg (
         if (rst == `RstEnable) begin
             pc <= 16'h0000;
         end else begin
-            in_delay_slot_o <= jump_i; //指示下一条指令id段是否处于在延迟槽
             if (ce == `ChipDisable) begin
                 pc <= 16'h0000;
                 in_delay_slot_o <= `Disable;
             end else if (stall[0] == `NoStop) begin
+                in_delay_slot_o <= jump_i; //指示下一条指令id段是否处于在延迟槽
                 if(jump_i == `Enable ) begin
                     pc <= jump_target_addr_i;
                 end else begin

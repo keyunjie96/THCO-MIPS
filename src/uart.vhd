@@ -54,21 +54,25 @@ end uart;
 architecture Behavioral of uart is
 ------------------信号声明------------------------
 type big_state_machine is (read_uart, write_uart); 
-type read_state_machine is (r0, r1, r2, r3);
+type read_state_machine is (r1, r2, r3);
 type write_state_machine is (w0, w1, w2, w3, w4, w5);
 signal big_state : big_state_machine;
 signal read_state : read_state_machine;
 signal write_state : write_state_machine;
 
 begin
-process(en3, rst, read_state)
-begin
-    if en3 = '1' or rst = '0' then
-        receive_data_complete <= '0';
-    elsif read_state = r3 then
-        receive_data_complete <= '1';
-    end if;
-end process;
+-- process(en3, rst, read_state)
+-- begin
+--     -- receive_data_complete <= '1';
+--     if en3 = '1' or rst = '0' then
+--         receive_data_complete <= '0';
+--     elsif read_state = r3 then
+--         receive_data_complete <= '1';
+--     end if;
+-- end process;
+
+receive_data_complete <= data_ready;
+-- ram1data <= send_data when en1 = '1' else "ZZZZZZZZ";
 
 process(rst, clk) is
 begin
@@ -79,15 +83,17 @@ begin
         ram1en <= '1';
         ram1oe <= '1';
         ram1we <= '1';
-        if en1 = '0' then
-            big_state <= read_uart;
-            read_state <= r0;
-            -- state_show(5 downto 0) <= "000000";
-        elsif en1 = '1' then
-            big_state <= write_uart;
-            write_state <= w0;
-            -- state_show(5 downto 0) <= "100000";
-        end if;
+        big_state <= read_uart;
+        read_state <= r1;
+        -- if en1 = '0' then
+        --     big_state <= read_uart;
+        --     read_state <= r1;
+        --     -- state_show(5 downto 0) <= "000000";
+        -- elsif en1 = '1' then
+        --     big_state <= write_uart;
+        --     write_state <= w0;
+        --     -- state_show(5 downto 0) <= "100000";
+        -- end if;
     elsif falling_edge(clk) and en2 = '1' then
         if en1 = '1' then -- 只切换到写状态，平常都是读
             big_state <= write_uart;
@@ -101,17 +107,17 @@ begin
         -- end if;
         if big_state = read_uart then
             case read_state is
-                when r0 =>
-                    rdn <= '0';
-                    read_state <= r1;
-                    -- state_show(4 downto 0) <= "10000";
+                -- when r0 =>
+                --     rdn <= '0';
+                --     read_state <= r1;
+                --     -- state_show(4 downto 0) <= "10000";
                 when r1 =>
                     rdn <= '1';
                     ram1data <= "ZZZZZZZZ";
                     read_state <= r2;
                     -- state_show(4 downto 0) <= "01000";
                 when r2 =>
-                    if data_ready = '1' then
+                    if data_ready = '1' and en3 = '1' then
                         rdn <= '0';
                         read_state <= r3;
                     elsif data_ready = '0' then
@@ -148,7 +154,7 @@ begin
                 when w4 =>
                     if tsre = '1' then 
                         big_state <= read_uart;
-                        read_state <= r0;
+                        read_state <= r1;
                         -- state_show(4 downto 0) <= "00001";
                         send_data_complete <= '1';
                         -- send_data_complete <= '1';

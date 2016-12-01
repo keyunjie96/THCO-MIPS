@@ -18,9 +18,9 @@ module mmu (
 
     // 串口
     output reg[`MemBus] serial_dataWrite_o,
-    output reg serial_readWrite_o,
-    output reg serial_enable_o,
-    output reg serial_fetch_data_o,
+    output reg serial_readWrite_o, //en1
+    output reg serial_enable_o, //en2
+    output reg serial_fetch_data_o, //en3
     input wire[`MemBus] serial_dataRead_i,
     input wire serial_sendComplete_i,
     input wire serial_receiveComplete_i
@@ -38,11 +38,13 @@ always @ ( * ) begin
             serial_dataWrite_o = memDataWrite_i;
         end else begin                          // 读
             serial_fetch_data_o = 1;
+            // memDataRead_o = 16'h0041;
             memDataRead_o = serial_dataRead_i;
         end
     end else if (memAddress_i == `SerialStatusAddr) begin
         ram_enable_o = `Disable;
         if (memReadWrite_i == `MemRead) begin  // 测试读写状态
+            // memDataRead_o = 16'hffff;
             memDataRead_o = {14'b0, serial_receiveComplete_i, serial_sendComplete_i};
         end
     end else begin
