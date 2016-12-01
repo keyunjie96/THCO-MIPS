@@ -2,10 +2,11 @@
 
 module top (
   input wire clk,
-  input wire clk_choose,
+  // input wire clk_choose,
   input wire clk_50,
   output wire clk_,
   input wire rst,
+  input wire[15:0] sw,
 
   // serial
   input wire data_ready,
@@ -23,6 +24,16 @@ module top (
   output wire ram2en,
   output wire[`MemAddrBus] ram2addr,
   inout wire[`MemBus] ram2data,
+  // flash
+  output wire flashByte,
+  output wire flashVpen,
+  output wire flashCe,
+  output wire flashOe,
+  output wire flashWe,
+  output wire flashRp,
+  output wire[22:1] flashAddr,
+  inout wire[15:0] flashData,
+
   output wire[15:0] led
 );
 
@@ -60,26 +71,31 @@ wire[`HalfWordBus] serial_dataRead_i;
 wire serial_sendComplete_i;
 wire serial_receiveComplete_i;
 
+// 连接flash_io和mem_bridge
+wire[22:1] memCtrl_flashAddr;
+wire[`MemBus] memCtrl_flashData;
+wire memCtrl_flashRead;
+
 // 分频后时钟
 wire clock;
-wire clk_fast;
-wire clk_slow;
+wire clk_full;
+wire clk_quarter;
 wire[1:0] state;
 
 // assign clk_choose = `Disable;
-assign clock = clk_choose == `Enable ? clk_50 : clk;
+assign clock = sw[0] == `Enable ? clk_50 : clk;
 
 // always @(*) begin
 //   a <= inst_addr;
 // end
 
-clock_divider clock_divider0(
-    .clk(clock),
-    .rst(rst),
-    .clk_fast(clk_fast),
-    .clk_slow(clk_slow),
-    .state(state)
-);
+// clock_divider clock_divider0(
+//     .clk(clock),
+//     .rst(rst),
+//     .clk_fast(clk_fast),
+//     .clk_slow(clk_slow),
+//     .state(state)
+// );
 
 uart uart0(
   //与上层接口
@@ -104,24 +120,88 @@ uart uart0(
   .receive_data(serial_dataRead_i)
 );
 
-mem_control mem_control0(
-  //与同层cpu接口
-  .instAddress_i(inst_addr),
-  .instData_o(inst),
+// mem_control mem_control0(
+//   //与同层cpu接口
+//   .instAddress_i(inst_addr),
+//   .instData_o(inst),
+//
+//   .memDataRead_o(memDataRead),
+//   .memAddress_i(memAddress),
+//   .memDataWrite_i(memDataWrite),
+//   .memWriteEnable_i(memWriteEnable),
+//   .memReadEnable_i(memReadEnable),
+//   .pauseRequest_i(pauseRequest),
+//
+//   // 与mmu
+//   .memDataRead_i(memCtrl_dataRead),
+//   .memAddress_o(memCtrl_address),
+//   .memDataWrite_o(memCtrl_dataWrite),
+//   .memReadWrite_o(memCtrl_readWrite),
+//   .memEnable_o(memCtrl_enable)
+// );
 
-  .memDataRead_o(memDataRead),
-  .memAddress_i(memAddress),
-  .memDataWrite_i(memDataWrite),
-  .memWriteEnable_i(memWriteEnable),
-  .memReadEnable_i(memReadEnable),
-  .pauseRequest_i(pauseRequest),
+wire flashWrite;
+wire flashErase;
 
-  // 与mmu
-  .memDataRead_i(memCtrl_dataRead),
-  .memAddress_o(memCtrl_address),
-  .memDataWrite_o(memCtrl_dataWrite),
-  .memReadWrite_o(memCtrl_readWrite),
-  .memEnable_o(memCtrl_enable)
+flash_io flash_io0(
+    .clk(clk_full),
+    .reset(rst),
+
+    // 与mem_bridge接口
+    .addr(memCtrl_flashAddr),
+    .data_out(memCtrl_flashData),
+    .ctl_read(memCtrl_flashRead),
+
+    // 通向flash接口
+    .flash_byte(flashByte),
+    .flash_vpen(flashVpen),
+    .flash_ce(flashCe),
+    .flash_oe(flashOe),
+    .flash_we(flashWe),
+    .flash_rp(flashRp),
+    .flash_addr(flashAddr),
+    .flash_data(flashData),
+
+    // 不用的接口
+    .data_in(`ZeroWord),
+    .ctl_write(flashWrite),
+    .ctl_erase(flashErase)
+);
+
+assign flashWrite = 0;
+assign flashErase = 0;
+
+mem_bridge mem_bridge0(
+    .clk(clock),
+    .rst(rst),
+    .sw(sw),
+
+    .clk_full(clk_full),
+    .clk_quarter(clk_quarter),
+
+    //与同层cpu接口
+    .instAddress_i(inst_addr),
+    .instData_o(inst),
+    .memDataRead_o(memDataRead),
+    .memAddress_i(memAddress),
+    .memDataWrite_i(memDataWrite),
+    .memWriteEnable_i(memWriteEnable),
+    .memReadEnable_i(memReadEnable),
+    .pauseRequest_i(pauseRequest),
+    // 与mmu
+    .memDataRead_i(memCtrl_dataRead),
+    .memAddress_o(memCtrl_address),
+    .memDataWrite_o(memCtrl_dataWrite),
+    .memReadWrite_o(memCtrl_readWrite),
+    .memEnable_o(memCtrl_enable),
+
+    // 与flash控制器接口
+    .flashAddr_o(memCtrl_flashAddr),
+    .flashCtl_o(memCtrl_flashRead),
+    .flashDataRead_i(memCtrl_flashData),
+
+    // 与RAM接口
+    .ramState_o(state)
 );
 
 mmu mmu0(
@@ -147,7 +227,7 @@ mmu mmu0(
 );
 
 ram_control ram_control0(
-    .clk(clk_fast),
+    .clk(clk_full),
     .rst(rst),
     .enable_in(ram_enable_in),
     .readWrite_in(ram_readWrite_in),
@@ -164,7 +244,7 @@ ram_control ram_control0(
 );
 
 cpu cpu0(
-  .clk(clk_slow),
+  .clk(clk_quarter),
   .rst(rst),
   //与同层mem_control接口
   .instData_i(inst),
@@ -182,11 +262,16 @@ cpu cpu0(
 // assign led[14] = ram2en;
 // assign led[13] = ram2we;
 // assign led[12] = ram2oe;
-// assign led[11] = serial_receiveComplete_i;
-// assign led[10] = serial_sendComplete_i;
-// assign led[9:0] = inst_addr;
-assign led = inst;
-assign clk_ = clk_50;
+// assign led[11] = 0;
+// assign led[10] = serial_receiveComplete_i;
+// assign led[9] = serial_sendComplete_i;
+// assign led[8:0] = inst_addr;
+// assign clk_ = clk_50;
+
+assign led[15] = sw[15];
+assign led[14] = sw[0];
+assign led[13] = memCtrl_flashRead;
+assign led[12:0] = memCtrl_flashData[12:0];
 
 // inst_rom inst_rom0(
 //   .ce(rom_ce),

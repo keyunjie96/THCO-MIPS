@@ -58,7 +58,6 @@ src/test.c
 *.zip
 *.cdc
 *.blc
-*.ucf
 *.exe
 
 
