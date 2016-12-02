@@ -1,19 +1,19 @@
 `include "defines.v"
 
 module ram_control (
-  input   wire                  clk,
-  input   wire                  rst,
-  input   wire                  enable_in,        // 使能信号
-  input   wire                  readWrite_in,     // 0表示读，1表示写
-  input   wire[`MemAddrBus]     address_in,
-  input   wire[`MemBus]         data_in,
-  input   wire[1:0]             state,
-  output  reg[`MemBus]          data_out,
-  output  reg                   ram_oe_out,
-  output  reg                   ram_we_out,
-  output  reg                   ram_en_out,
-  output  reg[`MemAddrBus]      ram_address_out,
-  inout   wire[`MemBus]         ram_data_inout
+input   wire                  clk,
+input   wire                  rst,
+input   wire                  enable_in,        // 使能信号
+input   wire                  readWrite_in,     // 0表示读，1表示写
+input   wire[`MemAddrBus]     address_in,
+input   wire[`MemBus]         data_in,
+input   wire[1:0]             state,
+output  reg[`MemBus]          data_out,
+output  reg                   ram_oe_out,
+output  reg                   ram_we_out,
+output  reg                   ram_en_out,
+output  reg[`MemAddrBus]      ram_address_out,
+inout   wire[`MemBus]         ram_data_inout
 );
 
 reg[`MemBus] dataBuffer;

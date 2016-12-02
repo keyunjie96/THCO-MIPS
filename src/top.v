@@ -41,7 +41,10 @@ module top (
   output wire[2:0] vgaG,
   output wire[2:0] vgaB,
 
-  output wire[15:0] led
+  output wire[15:0] led,
+  //KB
+  input wire ps2clock,
+  input wire ps2data
 );
 
 // 连接cpu和mem_control
@@ -83,12 +86,17 @@ wire[22:1] memCtrl_flashAddr;
 wire[`MemBus] memCtrl_flashData;
 wire memCtrl_flashRead;
 
-// 连接vga_control和mmu
-wire[`MemAddrBus] vga_address;
-wire[`MemBus] vga_data_in;
-wire vga_enable;
-wire vga_readWrite;
-wire[15:0] vga_data_out;
+
+// wire[`MemAddrBus] vga_address;
+// wire[`MemBus] vga_data_in;
+// wire vga_enable;
+// wire vga_readWrite;
+// wire[15:0] vga_data_out;
+
+// 连接keyboardAdapter和mmu
+wire kb_data_receive;
+wire kb_data_ready;
+wire[7:0] kb_ascii;
 
 // 分频后时钟
 wire clock;
@@ -198,6 +206,10 @@ mem_bridge mem_bridge0(
     .ramState_o(state)
 );
 
+// 连接vga_control和mmu
+wire[15:0] vga_numbers1;
+wire[15:0] vga_numbers2;
+
 mmu mmu0(
     // .clk(clk_50),
     .memAddress_i(memCtrl_address),
@@ -219,11 +231,17 @@ mmu mmu0(
     .serial_sendComplete_i(serial_sendComplete_i),
     .serial_receiveComplete_i(serial_receiveComplete_i),
     // vga
-    .vga_enable_o(vga_enable),
-    .vga_address_o(vga_address),
-    .vga_dataWrite_o(vga_data_in),
-    .vga_dataRead_i(vga_data_out),
-    .vga_readWrite_o(vga_readWrite)
+    .numbers1_o(vga_numbers1),
+    .numbers2_o(vga_numbers2),
+    // .vga_enable_o(vga_enable),
+    // .vga_address_o(vga_address),
+    // .vga_dataWrite_o(vga_data_in),
+    // .vga_dataRead_i(vga_data_out),
+    // .vga_readWrite_o(vga_readWrite),
+    // KeyboardAdapter
+    .kb_data_receive(kb_data_receive),
+    .kb_data_ready(kb_data_ready),
+    .kb_ascii(kb_ascii)
 );
 
 ram_control ram_control0(
@@ -252,11 +270,23 @@ vga_control vga_control0(
     .r(vgaR),
     .g(vgaG),
     .b(vgaB),
-    .enable(vga_enable),
-    .address_in(vga_address),
-    .data_in(vga_data_in),
-    .readWrite_in(vga_readWrite),
-    .data_out(vga_data_out)
+    .numbers1_i(vga_numbers1),
+    .numbers2_i(vga_numbers2)
+    // .enable(vga_enable),
+    // .address_in(vga_address),
+    // .data_in(vga_data_in),
+    // .readWrite_in(vga_readWrite),
+    // .data_out(vga_data_out)
+);
+
+KeyboardAdapter KeyboardAdapter0(
+    .PS2Data(ps2data),
+    .PS2Clock(ps2clock),
+    .Clock(clk_fast),
+    .Reset(rst),
+    .DataReceive(kb_data_receive),
+    .DataReady(kb_data_ready),
+    .Output(kb_ascii)
 );
 
 wire[1:0] vga_update;

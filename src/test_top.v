@@ -34,6 +34,7 @@ module test_top;
 	top uut (
 		.clk(clk),
 		.clk_50(clk),
+		.clk_11(clk),
 		.rst(rst)
 	);
 

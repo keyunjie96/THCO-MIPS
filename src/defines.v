@@ -37,6 +37,8 @@
 
 `define SerialIOAddr        16'hBF00
 `define SerialStatusAddr    16'hBF01
+`define KeyboardStatusAddr  16'hBE12
+`define KeyboardIOAddr       16'hBE13
 
 // ALU操作
 `define ALU_NOP             4'b0000                 // NOP
@@ -128,3 +130,13 @@
 `define w2                  4'b1010
 `define w3                  4'b1011
 `define w4                  4'b1100
+
+// `define PACK_ARRAY(PK_WIDTH,PK_LEN,PK_SRC,PK_DEST)    genvar pk_idx; generate for (pk_idx=0; pk_idx<(PK_LEN); pk_idx=pk_idx+1) begin; assign PK_DEST[((PK_WIDTH)*pk_idx+((PK_WIDTH)-1)):((PK_WIDTH)*pk_idx)] = PK_SRC[pk_idx][((PK_WIDTH)-1):0]; end; endgenerate
+
+// `define UNPACK_ARRAY(PK_WIDTH,PK_LEN,PK_DEST,PK_SRC) \
+// genvar UNPK_IDX; \
+// generate \
+//   for (UNPK_IDX=0; UNPK_IDX<(PK_LEN); UNPK_IDX=UNPK_IDX+1) begin //: unpackLoop <-- remove label\
+//     assign PK_DEST[UNPK_IDX][((PK_WIDTH)-1):0] = PK_SRC[(PK_WIDTH)*unpk_idx +: PK_WIDTH]; \
+//   end \
+// endgenerate

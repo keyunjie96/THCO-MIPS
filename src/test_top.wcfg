@@ -7,11 +7,15 @@
          <top_modules>
             <top_module name="glbl" />
             <top_module name="std_logic_1164" />
+            <top_module name="std_logic_arith" />
+            <top_module name="std_logic_textio" />
+            <top_module name="std_logic_unsigned" />
             <top_module name="test_top" />
+            <top_module name="textio" />
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="50" />
+   <WVObjectSize size="47" />
    <wvobject fp_name="/test_top/clk" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -24,14 +28,6 @@
       <obj_property name="ElementShortName">pc[15:0]</obj_property>
       <obj_property name="ObjectShortName">pc[15:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/test_top/uut/mem_control0/instAddress_i" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">instAddress_i[15:0]</obj_property>
-      <obj_property name="ObjectShortName">instAddress_i[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/test_top/uut/mem_control0/instData_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">instData_o[15:0]</obj_property>
-      <obj_property name="ObjectShortName">instData_o[15:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/test_top/uut/ram_control0/ram_address_out" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">ram_address_out[15:0]</obj_property>
       <obj_property name="ObjectShortName">ram_address_out[15:0]</obj_property>
@@ -39,14 +35,6 @@
    <wvobject fp_name="/test_top/uut/ram_control0/data_out" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">data_out[15:0]</obj_property>
       <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/test_top/uut/mem_control0/memAddress_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">memAddress_o[15:0]</obj_property>
-      <obj_property name="ObjectShortName">memAddress_o[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/test_top/uut/mem_control0/pauseRequest_i" type="logic" db_ref_id="1">
-      <obj_property name="ElementShortName">pauseRequest_i</obj_property>
-      <obj_property name="ObjectShortName">pauseRequest_i</obj_property>
    </wvobject>
    <wvobject fp_name="/test_top/uut/cpu0/ctrl0/stall_request_from_id" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">stall_request_from_id</obj_property>
@@ -201,8 +189,8 @@
       <obj_property name="ObjectShortName">state[1:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/test_top/uut/mmu0/serial_dataWrite_o" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">serial_dataWrite_o[15:0]</obj_property>
-      <obj_property name="ObjectShortName">serial_dataWrite_o[15:0]</obj_property>
+      <obj_property name="ElementShortName">serial_dataWrite_o[7:0]</obj_property>
+      <obj_property name="ObjectShortName">serial_dataWrite_o[7:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/test_top/uut/mmu0/memReadWrite_i" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">memReadWrite_i</obj_property>
@@ -211,5 +199,9 @@
    <wvobject fp_name="/test_top/uut/mmu0/memAddress_i" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">memAddress_i[15:0]</obj_property>
       <obj_property name="ObjectShortName">memAddress_i[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/test_top/uut/mmu0/numbers_o" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">numbers_o[255:0]</obj_property>
+      <obj_property name="ObjectShortName">numbers_o[255:0]</obj_property>
    </wvobject>
 </wave_config>
