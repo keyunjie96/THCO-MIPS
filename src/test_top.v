@@ -33,8 +33,8 @@ module test_top;
 	// Instantiate the Unit Under Test (UUT)
 	top uut (
 		.clk(clk),
-		.rst(rst),
-		.clk_choose(clk_choose)
+		.clk_50(clk),
+		.rst(rst)
 	);
 
 	initial begin

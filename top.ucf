@@ -2,7 +2,8 @@
 # PlanAhead Generated physical constraints
 
 NET "clk" LOC = U9;
-NET "clk_50" LOC = B8;
+NET "clk_50" LOC = B9;
+NET "clk_11" LOC = B8;
 NET "rst" LOC = U10;
 NET "data_ready" LOC = A16;
 NET "tbre" LOC = D14;
@@ -37,6 +38,18 @@ NET "sw[12]" LOC = K7;
 NET "sw[13]" LOC = K2;
 NET "sw[14]" LOC = J7;
 NET "sw[15]" LOC = J6;
+
+NET "vgaHs" LOC = D6;
+NET "vgaVs" LOC = E6;
+NET "vgaR[0]" LOC = A7;
+NET "vgaR[1]" LOC = C3;
+NET "vgaR[2]" LOC = A4;
+NET "vgaG[0]" LOC = B4;
+NET "vgaG[1]" LOC = C4;
+NET "vgaG[2]" LOC = C5;
+NET "vgaB[0]" LOC = D5;
+NET "vgaB[1]" LOC = A6;
+NET "vgaB[2]" LOC = B6;
 
 NET "flashByte" LOC = C1;
 NET "flashVpen" LOC = C2;

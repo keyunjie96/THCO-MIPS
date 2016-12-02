@@ -17,13 +17,23 @@ module mmu (
     input wire[`MemBus] ram_dataRead_i,
 
     // 串口
-    output reg[`MemBus] serial_dataWrite_o,
+    output reg[`HalfWordBus] serial_dataWrite_o,
     output reg serial_readWrite_o, //en1
     output reg serial_enable_o, //en2
     output reg serial_fetch_data_o, //en3
-    input wire[`MemBus] serial_dataRead_i,
+    input wire[`HalfWordBus] serial_dataRead_i,
     input wire serial_sendComplete_i,
-    input wire serial_receiveComplete_i
+    input wire serial_receiveComplete_i,
+
+    // VGA
+    output reg vga_enable_o,
+    output reg[15:0] vga_address_o,
+    output reg[15:0] vga_dataWrite_o,
+    input wire[15:0] vga_dataRead_i,
+    output reg vga_readWrite_o
+    // output reg vga_enable_o,
+    // output reg[10:0] vga_address_o,
+    // output reg[7:0] vga_dataWrite_o
 );
 
 always @ ( * ) begin
@@ -35,17 +45,27 @@ always @ ( * ) begin
         ram_enable_o = `Disable;
         serial_readWrite_o = memReadWrite_i;
         if (memReadWrite_i == `MemWrite) begin   // 写
-            serial_dataWrite_o = memDataWrite_i;
+            serial_dataWrite_o = memDataWrite_i[7:0];
         end else begin                          // 读
             serial_fetch_data_o = 1;
             // memDataRead_o = 16'h0041;
-            memDataRead_o = serial_dataRead_i;
+            memDataRead_o = {8'h00, serial_dataRead_i};
         end
     end else if (memAddress_i == `SerialStatusAddr) begin
         ram_enable_o = `Disable;
         if (memReadWrite_i == `MemRead) begin  // 测试读写状态
             // memDataRead_o = 16'hffff;
             memDataRead_o = {14'b0, serial_receiveComplete_i, serial_sendComplete_i};
+        end
+    end else if (memAddress_i >= 16'hBE00 && memAddress_i <= 16'hBE0F) begin
+        vga_enable_o = `Enable;
+        vga_readWrite_o = memReadWrite_i;
+        if (memReadWrite_i == `MemWrite) begin
+            vga_address_o = memAddress_i;
+            vga_dataWrite_o = memDataWrite_i;
+        end else begin
+            vga_address_o = memAddress_i;
+            memDataRead_o = vga_dataRead_i;
         end
     end else begin
         ram_enable_o = `Enable;

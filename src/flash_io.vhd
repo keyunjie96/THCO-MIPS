@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    23:19:42 10/29/2011 
--- Design Name: 
--- Module Name:    flash_byte - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Create Date:    23:19:42 10/29/2011
+-- Design Name:
+-- Module Name:    flash_byte - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --
--- Revision: 
+-- Dependencies:
+--
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -33,9 +33,9 @@ entity flash_io is
     Port ( addr : in  STD_LOGIC_VECTOR (22 downto 1);
            data_in : in  STD_LOGIC_VECTOR (15 downto 0);
            data_out : out  STD_LOGIC_VECTOR (15 downto 0);
-			  clk : in std_logic;--Ëæ±ãÊ²Ã´Ê±ÖÓ
+			  clk : in std_logic;--ï¿½ï¿½ï¿½ï¿½Ê²Ã´Ê±ï¿½ï¿½
 			  reset : in std_logic;
-			  
+
 			  flash_byte : out std_logic;--BYTE#
 			  flash_vpen : out std_logic;
 			  flash_ce : out std_logic;
@@ -45,7 +45,7 @@ entity flash_io is
 			  --flash_sts : in std_logic;
 			  flash_addr : out std_logic_vector(22 downto 1);
 			  flash_data : inout std_logic_vector(15 downto 0);
-			  
+
            ctl_read : in  STD_LOGIC;
            ctl_write : in  STD_LOGIC;
 			  ctl_erase : in STD_LOGIC
@@ -63,7 +63,7 @@ architecture Behavioral of flash_io is
 	);
 	signal state : flash_state := waiting;
 	signal next_state : flash_state := waiting;
-	
+
 	signal ctl_read_last, ctl_write_last, ctl_erase_last : std_logic;
 begin
 
@@ -71,7 +71,7 @@ begin
 	flash_vpen <= '1';
 	flash_ce <= '0';
 	flash_rp <= '1';
-	
+
 	process (clk, reset)
 	begin
 		if (reset = '0') then
@@ -151,7 +151,7 @@ begin
 				when write8 =>
 					flash_we <= '1';
 					state <= done;
-					
+
 				when read1 =>
 					flash_data <= x"00FF";
 					state <= read2;
@@ -166,8 +166,8 @@ begin
 				when read4 =>
 					data_out <= flash_data;
 					state <= done;
-					
-					
+
+
 				when erase1 =>
 					flash_data <= x"0020";
 					state <= erase2;
@@ -188,7 +188,7 @@ begin
 				when erase6 =>
 					state <= done;
 					data_out(0) <= '1';
-					
+
 				when others =>
 					flash_oe <= '1';
 					flash_we <= '1';
@@ -197,7 +197,6 @@ begin
 			end case;
 		end if;
 	end process;
-	
+
 
 end Behavioral;
-

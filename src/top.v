@@ -4,6 +4,7 @@ module top (
   input wire clk,
   // input wire clk_choose,
   input wire clk_50,
+  input wire clk_11,
   output wire clk_,
   input wire rst,
   input wire[15:0] sw,
@@ -33,6 +34,12 @@ module top (
   output wire flashRp,
   output wire[22:1] flashAddr,
   inout wire[15:0] flashData,
+  // VGA
+  output wire vgaHs,
+  output wire vgaVs,
+  output wire[2:0] vgaR,
+  output wire[2:0] vgaG,
+  output wire[2:0] vgaB,
 
   output wire[15:0] led
 );
@@ -76,6 +83,13 @@ wire[22:1] memCtrl_flashAddr;
 wire[`MemBus] memCtrl_flashData;
 wire memCtrl_flashRead;
 
+// 连接vga_control和mmu
+wire[`MemAddrBus] vga_address;
+wire[`MemBus] vga_data_in;
+wire vga_enable;
+wire vga_readWrite;
+wire[15:0] vga_data_out;
+
 // 分频后时钟
 wire clock;
 wire clk_full;
@@ -83,7 +97,7 @@ wire clk_quarter;
 wire[1:0] state;
 
 // assign clk_choose = `Disable;
-assign clock = sw[0] == `Enable ? clk_50 : clk;
+assign clock = sw[0] == `Enable ? clk_11 : clk;
 
 // always @(*) begin
 //   a <= inst_addr;
@@ -99,7 +113,7 @@ assign clock = sw[0] == `Enable ? clk_50 : clk;
 
 uart uart0(
   //与上层接口
-  .clk(clk_50),
+  .clk(clk_11),
   .rst(rst),
   .data_ready(data_ready),
   .tbre(tbre),
@@ -119,26 +133,6 @@ uart uart0(
   .en3(serial_fetch_data_o),
   .receive_data(serial_dataRead_i)
 );
-
-// mem_control mem_control0(
-//   //与同层cpu接口
-//   .instAddress_i(inst_addr),
-//   .instData_o(inst),
-//
-//   .memDataRead_o(memDataRead),
-//   .memAddress_i(memAddress),
-//   .memDataWrite_i(memDataWrite),
-//   .memWriteEnable_i(memWriteEnable),
-//   .memReadEnable_i(memReadEnable),
-//   .pauseRequest_i(pauseRequest),
-//
-//   // 与mmu
-//   .memDataRead_i(memCtrl_dataRead),
-//   .memAddress_o(memCtrl_address),
-//   .memDataWrite_o(memCtrl_dataWrite),
-//   .memReadWrite_o(memCtrl_readWrite),
-//   .memEnable_o(memCtrl_enable)
-// );
 
 wire flashWrite;
 wire flashErase;
@@ -223,7 +217,13 @@ mmu mmu0(
     .serial_enable_o(serial_enable_o),
     .serial_dataRead_i(serial_dataRead_i),
     .serial_sendComplete_i(serial_sendComplete_i),
-    .serial_receiveComplete_i(serial_receiveComplete_i)
+    .serial_receiveComplete_i(serial_receiveComplete_i),
+    // vga
+    .vga_enable_o(vga_enable),
+    .vga_address_o(vga_address),
+    .vga_dataWrite_o(vga_data_in),
+    .vga_dataRead_i(vga_data_out),
+    .vga_readWrite_o(vga_readWrite)
 );
 
 ram_control ram_control0(
@@ -243,6 +243,42 @@ ram_control ram_control0(
     .ram_data_inout(ram2data)
 );
 
+
+vga_control vga_control0(
+    .clk(clk_50),
+    .rst(rst),
+    .hs(vgaHs),
+    .vs(vgaVs),
+    .r(vgaR),
+    .g(vgaG),
+    .b(vgaB),
+    .enable(vga_enable),
+    .address_in(vga_address),
+    .data_in(vga_data_in),
+    .readWrite_in(vga_readWrite),
+    .data_out(vga_data_out)
+);
+
+wire[1:0] vga_update;
+
+// VGAControl VGAControl0(
+//     .CLKout(clk_50),
+//     .CLKin(clk_50),
+//     .Reset(rst),
+//     .hs(vgaHs),
+//     .vs(vgaVs),
+//     .r(vgaR),
+//     .g(vgaG),
+//     .b(vgaB),
+//     .CharWea(vga_enable),
+//     .CharAddra(vga_address),
+//     .CharDina(vga_data_in),
+//     .CharDouta(),
+//     .UpdateType(vga_update)
+// );
+
+assign vga_update = 2'b00;
+
 cpu cpu0(
   .clk(clk_quarter),
   .rst(rst),
@@ -258,20 +294,10 @@ cpu cpu0(
   .pauseRequest_o(pauseRequest)
 );
 
-// assign led[15] = ram_readWrite_in;
-// assign led[14] = ram2en;
-// assign led[13] = ram2we;
-// assign led[12] = ram2oe;
-// assign led[11] = 0;
-// assign led[10] = serial_receiveComplete_i;
-// assign led[9] = serial_sendComplete_i;
-// assign led[8:0] = inst_addr;
-// assign clk_ = clk_50;
 
 assign led[15] = sw[15];
 assign led[14] = sw[0];
-assign led[13] = memCtrl_flashRead;
-assign led[12:0] = memCtrl_flashData[12:0];
+assign led[13:0] = inst_addr[13:0];
 
 // inst_rom inst_rom0(
 //   .ce(rom_ce),
