@@ -44,7 +44,10 @@ module top (
   input wire ps2clock,
   input wire ps2data,
 
-  output wire[15:0] led
+  output wire[15:0] led,
+  //KB
+  input wire ps2clock,
+  input wire ps2data
 );
 
 // 连接cpu和mem_control

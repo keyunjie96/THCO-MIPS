@@ -59,6 +59,13 @@ module mmu (
     // output reg vga_enable_o,
     // output reg[10:0] vga_address_o,
     // output reg[7:0] vga_dataWrite_o
+    output reg[15:0] numbers1_o,
+    output reg[15:0] numbers2_o,
+
+    //KB
+    output reg kb_data_receive,
+    input wire kb_data_ready,
+    input wire[7:0] kb_ascii
 );
 
 integer cnt;
