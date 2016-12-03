@@ -51,6 +51,9 @@ NET "vgaB[0]" LOC = D5;
 NET "vgaB[1]" LOC = A6;
 NET "vgaB[2]" LOC = B6;
 
+NET "ps2clock" LOC = U6;
+NET "ps2data" LOC = V6;
+
 NET "flashByte" LOC = C1;
 NET "flashVpen" LOC = C2;
 NET "flashCe" LOC = E4;

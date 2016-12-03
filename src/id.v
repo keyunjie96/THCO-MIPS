@@ -138,7 +138,7 @@ always @ ( * ) begin
       // MEM (blank)
       // WB
       wReg_o <= `Disable;
-      wRegAddr_o <= `ZeroWord;
+      wRegAddr_o <= `DisableRegAddr;
     end
     `OP_B:  begin
       // reg
@@ -153,7 +153,7 @@ always @ ( * ) begin
       // MEM (blank)
       // WB
       wReg_o <= `Disable;
-      wRegAddr_o <= `ZeroWord;
+      wRegAddr_o <= `DisableRegAddr;
       // pc
       if (in_delay_slot_i == `Disable) begin
         jump_o <= `Enable;
@@ -173,7 +173,7 @@ always @ ( * ) begin
       // MEM (blank)
       // WB
       wReg_o <= `Disable;
-      wRegAddr_o <= `ZeroWord;
+      wRegAddr_o <= `DisableRegAddr;
       // pc
       if ((reg1Data == `ZeroWord) && (in_delay_slot_i == `Disable)) begin
         jump_o <= `Enable;
@@ -193,7 +193,7 @@ always @ ( * ) begin
       // MEM (blank)
       // WB
       wReg_o <= `Disable;
-      wRegAddr_o <= `ZeroWord;
+      wRegAddr_o <= `DisableRegAddr;
       // pc
       if ((reg1Data != `ZeroWord) && (in_delay_slot_i == `Disable)) begin
         jump_o <= `Enable;
@@ -275,7 +275,7 @@ always @ ( * ) begin
           // MEM (blank)
           // WB
           wReg_o <= `Disable;
-          wRegAddr_o <= `ZeroWord;
+          wRegAddr_o <= `DisableRegAddr;
           // pc
           if ((reg1Data == `ZeroWord) && (in_delay_slot_i == `Disable)) begin
             jump_o <= `Enable;
@@ -384,7 +384,7 @@ always @ ( * ) begin
       aluOp_o <= `ALU_SW;
       // WB
       wReg_o <= `Disable;
-      wRegAddr_o <= `ZeroWord;
+      wRegAddr_o <= `DisableRegAddr;
     end
     `OP_SW: begin
       // reg
@@ -398,7 +398,7 @@ always @ ( * ) begin
       aluOp_o <= `ALU_SW;
       // WB
       wReg_o <= `Disable;
-      wRegAddr_o <= `ZeroWord;
+      wRegAddr_o <= `DisableRegAddr;
     end
 
 
@@ -547,7 +547,7 @@ always @ ( * ) begin
           // MEM (blank)
           // WB
           wReg_o <= `Disable;
-          wRegAddr_o <= `ZeroWord;
+          wRegAddr_o <= `DisableRegAddr;
           // pc
           if (in_delay_slot_i == `Disable) begin
             jump_o <= `Enable;
@@ -591,7 +591,7 @@ always @ ( * ) begin
           // MEM (blank)
           // WB
           wReg_o <= `Disable;
-          wRegAddr_o <= `ZeroWord;
+          wRegAddr_o <= `DisableRegAddr;
           // pc
           if (in_delay_slot_i == `Disable) begin
             jump_o <= `Enable;

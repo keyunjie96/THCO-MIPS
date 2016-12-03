@@ -37,7 +37,7 @@ always @ (posedge clk) begin
     wData_o <= `ZeroWord;
     // WB
     wReg_o <= `Disable;
-    wRegAddr_o <= `RegZero;
+    wRegAddr_o <= `DisableRegAddr;
   end
   else if(stall[3] == `NoStop) begin
     memAddr_o <= memAddr_i;

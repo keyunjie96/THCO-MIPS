@@ -31,7 +31,7 @@ always @ (posedge clk) begin
     operand1_o <= `ZeroWord;
     operand2_o <= `ZeroWord;
     wReg_o <= `WriteDisable;
-    wRegAddr_o <= `RegZero;
+    wRegAddr_o <= `DisableRegAddr;
   end
   else if(stall[2] == `NoStop) begin
     aluOp_o <= aluOp_i;

@@ -21,7 +21,7 @@ always @ (posedge clk) begin
   if ((rst == `RstEnable) || ((stall[4] == `Stop) & (stall[5] == `NoStop))) begin
     wData_o <= `ZeroWord;
     wReg_o <= `Disable;
-    wRegAddr_o <= `RegZero;
+    wRegAddr_o <= `DisableRegAddr;
   end
   else if (stall[4] == `NoStop) begin
     wData_o <= wData_i;

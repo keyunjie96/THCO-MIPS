@@ -5,11 +5,22 @@
 module vga_control (
     input wire clk,
     input wire rst,
-    input wire enable,
-    input wire[15:0] address_in,
-    input wire[15:0] data_in,
-    output reg[15:0] data_out,
-    input wire readWrite_in,
+    input wire[15:0] number0,
+    input wire[15:0] number1,
+    input wire[15:0] number2,
+    input wire[15:0] number3,
+    input wire[15:0] number4,
+    input wire[15:0] number5,
+    input wire[15:0] number6,
+    input wire[15:0] number7,
+    input wire[15:0] number8,
+    input wire[15:0] number9,
+    input wire[15:0] number10,
+    input wire[15:0] number11,
+    input wire[15:0] number12,
+    input wire[15:0] number13,
+    input wire[15:0] number14,
+    input wire[15:0] number15,
 
     output wire hs,
     output wire vs,
@@ -18,7 +29,7 @@ module vga_control (
     output wire[2:0] b
 );
 
-reg[15:0] numbers[0:15];
+// reg[15:0] numbers[0:15];
 
 reg[13:0] gRamAddr;
 reg[31:0] gRamData;
@@ -52,49 +63,49 @@ reg[1:0] io_state;
 reg[1:0] INIT = 2'b00, READ = 2'b01, WRITE = 2'b10, HOLD = 2'b11;
 
 // 读取、存放数据
-always @ (posedge clk or negedge rst) begin
-    if (rst == `RstEnable) begin
-        numbers[0] <= `ZeroWord;
-        numbers[1] <= `ZeroWord;
-        numbers[2] <= `ZeroWord;
-        numbers[3] <= `ZeroWord;
-        numbers[4] <= `ZeroWord;
-        numbers[5] <= `ZeroWord;
-        numbers[6] <= `ZeroWord;
-        numbers[7] <= `ZeroWord;
-        numbers[8] <= `ZeroWord;
-        numbers[9] <= `ZeroWord;
-        numbers[10] <= `ZeroWord;
-        numbers[11] <= `ZeroWord;
-        numbers[12] <= `ZeroWord;
-        numbers[13] <= `ZeroWord;
-        numbers[14] <= `ZeroWord;
-        numbers[15] <= `ZeroWord;
-        io_state <= INIT;
-    end else begin
-        case (io_state)
-            INIT: begin
-                if (readWrite_in == `MemRead) begin
-                    io_state <= READ;
-                end else begin
-                    io_state <= WRITE;
-                end
-            end
-            READ: begin
-                data_out <= numbers[address_in[3:0]];
-                io_state <= HOLD;
-            end
-            WRITE: begin
-                numbers[address_in[3:0]] <= data_in;
-                io_state <= HOLD;
-            end
-            HOLD: begin
-                io_state <= INIT;
-            end
-            default: io_state <= INIT;
-        endcase
-    end
-end
+// always @ (posedge clk or negedge rst) begin
+//     if (rst == `RstEnable) begin
+//         numbers[0] <= `ZeroWord;
+//         numbers[1] <= `ZeroWord;
+//         numbers[2] <= `ZeroWord;
+//         numbers[3] <= `ZeroWord;
+//         numbers[4] <= `ZeroWord;
+//         numbers[5] <= `ZeroWord;
+//         numbers[6] <= `ZeroWord;
+//         numbers[7] <= `ZeroWord;
+//         numbers[8] <= `ZeroWord;
+//         numbers[9] <= `ZeroWord;
+//         numbers[10] <= `ZeroWord;
+//         numbers[11] <= `ZeroWord;
+//         numbers[12] <= `ZeroWord;
+//         numbers[13] <= `ZeroWord;
+//         numbers[14] <= `ZeroWord;
+//         numbers[15] <= `ZeroWord;
+//         io_state <= INIT;
+//     end else begin
+//         case (io_state)
+//             INIT: begin
+//                 if (readWrite_in == `MemRead) begin
+//                     io_state <= READ;
+//                 end else begin
+//                     io_state <= WRITE;
+//                 end
+//             end
+//             READ: begin
+//                 data_out <= numbers[address_in[3:0]];
+//                 io_state <= HOLD;
+//             end
+//             WRITE: begin
+//                 numbers[address_in[3:0]] <= data_in;
+//                 io_state <= HOLD;
+//             end
+//             HOLD: begin
+//                 io_state <= INIT;
+//             end
+//             default: io_state <= INIT;
+//         endcase
+//     end
+// end
 
 integer line_state, vga_state;
 integer ROW_OFFSET = 100, COLUMN_OFFSET = 192;
@@ -147,19 +158,23 @@ always @ (posedge clk or negedge rst) begin
                 end else begin
                     line_state <= line_state + 1;
                 end
-                case (numbers[row_index * 4 + column_index])
-                    0: romBaseAddr <= 1;    // TODO: this should be zero
-                    2: romBaseAddr <= 1;
-                    4: romBaseAddr <= 2;
-                    8: romBaseAddr <= 3;
-                    16: romBaseAddr <= 4;
-                    32: romBaseAddr <= 5;
-                    64: romBaseAddr <= 6;
-                    128: romBaseAddr <= 7;
-                    256: romBaseAddr <= 8;
-                    512: romBaseAddr <= 9;
-                    1024: romBaseAddr <= 10;
-                    2048: romBaseAddr <= 11;
+                case (row_index * 4 + column_index)
+                    0: romBaseAddr <= number0;
+                    1: romBaseAddr <= number1;
+                    2: romBaseAddr <= number2;
+                    3: romBaseAddr <= number3;
+                    4: romBaseAddr <= number4;
+                    5: romBaseAddr <= number5;
+                    6: romBaseAddr <= number6;
+                    7: romBaseAddr <= number7;
+                    8: romBaseAddr <= number8;
+                    9: romBaseAddr <= number9;
+                    10: romBaseAddr <= number10;
+                    11: romBaseAddr <= number11;
+                    12: romBaseAddr <= number12;
+                    13: romBaseAddr <= number13;
+                    14: romBaseAddr <= number14;
+                    15: romBaseAddr <= number15;
                     default: romBaseAddr <= 0;
                 endcase
                 vga_state <= VGA_INIT;

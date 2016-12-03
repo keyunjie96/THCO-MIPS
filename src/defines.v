@@ -37,6 +37,10 @@
 
 `define SerialIOAddr        16'hBF00
 `define SerialStatusAddr    16'hBF01
+`define KeyboardStatusAddr  16'hBE12
+`define KeyboardIOAddr      16'hBE13
+`define RandomIOAddr        16'hBE14
+`define DisableRegAddr      4'hF
 
 // ALU操作
 `define ALU_NOP             4'b0000                 // NOP
@@ -104,7 +108,7 @@
 `define RegAddrBus          3:0                     // 寄存器地址，4位
 `define RegBus              15:0                    // 寄存器数据宽，16位
 `define RegNum              16                      // 寄存器数量
-`define RegZero             4'b0000                 // 0号寄存器地址
+             // 0号寄存器地址
 
 // 暂停
 `define StallRegBus         5:0

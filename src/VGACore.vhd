@@ -162,6 +162,18 @@ begin
 					r1  <= "000";
 					g1	<= "000";
 					b1	<= "000";
+			elsif ((vector_x >= 175 and vector_x <= 177) or (vector_x >= 239 and vector_x <= 241)
+				or (vector_x >= 303 and vector_x <= 305) or (vector_x >= 367 and vector_x <= 369)
+				or (vector_x >= 431 and vector_x <= 433)) and (vector_y >= 31 and vector_y <= 161) then
+					r1 <= "100";
+					g1 <= "100";
+					b1 <= "100";
+			elsif ((vector_y >= 31 and vector_y <= 33) or (vector_y >= 63 and vector_y <= 65)
+				or (vector_y >= 95 and vector_y <= 97) or (vector_y >= 127 and vector_y <= 129)
+				or (vector_y >= 159 and vector_y <= 161)) and (vector_x >= 175 and vector_x <= 433) then
+					r1 <= "100";
+					g1 <= "100";
+					b1 <= "100";
 			else
 				if GRamDoutb_in = "1" then
 					r1  <= "100";

@@ -40,6 +40,9 @@ module top (
   output wire[2:0] vgaR,
   output wire[2:0] vgaG,
   output wire[2:0] vgaB,
+  //KB
+  input wire ps2clock,
+  input wire ps2data,
 
   output wire[15:0] led
 );
@@ -83,12 +86,10 @@ wire[22:1] memCtrl_flashAddr;
 wire[`MemBus] memCtrl_flashData;
 wire memCtrl_flashRead;
 
-// 连接vga_control和mmu
-wire[`MemAddrBus] vga_address;
-wire[`MemBus] vga_data_in;
-wire vga_enable;
-wire vga_readWrite;
-wire[15:0] vga_data_out;
+// 连接keyboardAdapter和mmu
+wire kb_data_receive;
+wire kb_data_ready;
+wire[7:0] kb_ascii;
 
 // 分频后时钟
 wire clock;
@@ -198,8 +199,26 @@ mem_bridge mem_bridge0(
     .ramState_o(state)
 );
 
+// 连接vga_control和mmu
+wire[15:0] vga_number0;
+wire[15:0] vga_number1;
+wire[15:0] vga_number2;
+wire[15:0] vga_number3;
+wire[15:0] vga_number4;
+wire[15:0] vga_number5;
+wire[15:0] vga_number6;
+wire[15:0] vga_number7;
+wire[15:0] vga_number8;
+wire[15:0] vga_number9;
+wire[15:0] vga_number10;
+wire[15:0] vga_number11;
+wire[15:0] vga_number12;
+wire[15:0] vga_number13;
+wire[15:0] vga_number14;
+wire[15:0] vga_number15;
+
 mmu mmu0(
-    // .clk(clk_50),
+    .clk(clk_quarter),
     .memAddress_i(memCtrl_address),
     .memDataWrite_i(memCtrl_dataWrite),
     .memReadWrite_i(memCtrl_readWrite),
@@ -219,11 +238,26 @@ mmu mmu0(
     .serial_sendComplete_i(serial_sendComplete_i),
     .serial_receiveComplete_i(serial_receiveComplete_i),
     // vga
-    .vga_enable_o(vga_enable),
-    .vga_address_o(vga_address),
-    .vga_dataWrite_o(vga_data_in),
-    .vga_dataRead_i(vga_data_out),
-    .vga_readWrite_o(vga_readWrite)
+    .number0_o(vga_number0),
+    .number1_o(vga_number1),
+    .number2_o(vga_number2),
+    .number3_o(vga_number3),
+    .number4_o(vga_number4),
+    .number5_o(vga_number5),
+    .number6_o(vga_number6),
+    .number7_o(vga_number7),
+    .number8_o(vga_number8),
+    .number9_o(vga_number9),
+    .number10_o(vga_number10),
+    .number11_o(vga_number11),
+    .number12_o(vga_number12),
+    .number13_o(vga_number13),
+    .number14_o(vga_number14),
+    .number15_o(vga_number15),
+    // KeyboardAdapter
+    .kb_data_receive(kb_data_receive),
+    .kb_data_ready(kb_data_ready),
+    .kb_ascii(kb_ascii)
 );
 
 ram_control ram_control0(
@@ -252,32 +286,33 @@ vga_control vga_control0(
     .r(vgaR),
     .g(vgaG),
     .b(vgaB),
-    .enable(vga_enable),
-    .address_in(vga_address),
-    .data_in(vga_data_in),
-    .readWrite_in(vga_readWrite),
-    .data_out(vga_data_out)
+    .number0(vga_number0),
+    .number1(vga_number1),
+    .number2(vga_number2),
+    .number3(vga_number3),
+    .number4(vga_number4),
+    .number5(vga_number5),
+    .number6(vga_number6),
+    .number7(vga_number7),
+    .number8(vga_number8),
+    .number9(vga_number9),
+    .number10(vga_number10),
+    .number11(vga_number11),
+    .number12(vga_number12),
+    .number13(vga_number13),
+    .number14(vga_number14),
+    .number15(vga_number15)
 );
 
-wire[1:0] vga_update;
-
-// VGAControl VGAControl0(
-//     .CLKout(clk_50),
-//     .CLKin(clk_50),
-//     .Reset(rst),
-//     .hs(vgaHs),
-//     .vs(vgaVs),
-//     .r(vgaR),
-//     .g(vgaG),
-//     .b(vgaB),
-//     .CharWea(vga_enable),
-//     .CharAddra(vga_address),
-//     .CharDina(vga_data_in),
-//     .CharDouta(),
-//     .UpdateType(vga_update)
-// );
-
-assign vga_update = 2'b00;
+KeyboardAdapter KeyboardAdapter0(
+    .ps2data(ps2data),
+    .ps2clk(ps2clock),
+    .clk(clk_11),
+    .rst(rst),
+    .DataReceive(kb_data_receive),
+    .DataReady(kb_data_ready),
+    .ascii_o(kb_ascii)
+);
 
 cpu cpu0(
   .clk(clk_quarter),
@@ -297,7 +332,10 @@ cpu cpu0(
 
 assign led[15] = sw[15];
 assign led[14] = sw[0];
-assign led[13:0] = inst_addr[13:0];
+assign led[13] = kb_data_ready;
+assign led[12] = kb_data_receive;
+assign led[11:4] = kb_ascii;
+assign led[3:0] = inst_addr[3:0];
 
 // inst_rom inst_rom0(
 //   .ce(rom_ce),
